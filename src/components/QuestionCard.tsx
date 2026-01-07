@@ -106,11 +106,11 @@ export const QuestionCard = ({
             )}
           </div>
 
-          <div className="flex items-center pt-4 border-t border-border">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pt-4 border-t border-border">
             <button
               onClick={onPrev}
               disabled={isFirst}
-              className={`flex items-center justify-center gap-1 w-24 py-2 rounded-lg font-medium transition-all
+              className={`flex items-center justify-start gap-1 justify-self-start px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap
                 ${isFirst 
                   ? "opacity-30 cursor-not-allowed" 
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -119,21 +119,23 @@ export const QuestionCard = ({
               <ChevronLeft className="w-4 h-4" />
               Back
             </button>
-            
-            <div className="flex-1 flex justify-center gap-1">
-              {[...Array(11)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    i === question.id - 1 ? "bg-primary w-4" : "bg-secondary"
-                  }`}
-                />
-              ))}
+
+            <div className="min-w-0 flex justify-center">
+              <div className="flex gap-0.5 sm:gap-1 max-w-full overflow-hidden">
+                {[...Array(11)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all ${
+                      i === question.id - 1 ? "bg-primary w-3 sm:w-4" : "bg-secondary"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
             <button
               onClick={onNext}
-              className={`flex items-center justify-center gap-1 w-24 py-2 rounded-lg font-medium transition-all
+              className={`flex items-center justify-end gap-1 justify-self-end px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap
                 ${isLast
                   ? "gradient-primary text-primary-foreground shadow-soft"
                   : "text-primary hover:bg-secondary"
