@@ -106,11 +106,11 @@ export const QuestionCard = ({
             )}
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-border">
+          <div className="flex items-center pt-4 border-t border-border">
             <button
               onClick={onPrev}
               disabled={isFirst}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all
+              className={`flex items-center justify-center gap-1 w-24 py-2 rounded-lg font-medium transition-all
                 ${isFirst 
                   ? "opacity-30 cursor-not-allowed" 
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -120,7 +120,7 @@ export const QuestionCard = ({
               Back
             </button>
             
-            <div className="flex gap-1">
+            <div className="flex-1 flex justify-center gap-1">
               {[...Array(11)].map((_, i) => (
                 <div
                   key={i}
@@ -133,7 +133,7 @@ export const QuestionCard = ({
 
             <button
               onClick={onNext}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all
+              className={`flex items-center justify-center gap-1 w-24 py-2 rounded-lg font-medium transition-all
                 ${isLast
                   ? "gradient-primary text-primary-foreground shadow-soft"
                   : "text-primary hover:bg-secondary"
