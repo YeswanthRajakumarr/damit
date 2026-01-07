@@ -4,6 +4,7 @@ import { questions } from "@/data/questions";
 import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
+import { InstallPrompt } from "./InstallPrompt";
 import { Leaf } from "lucide-react";
 
 export const DAMForm = () => {
@@ -93,6 +94,9 @@ export const DAMForm = () => {
           Daily Accountable Message
         </p>
       </footer>
+
+      {/* Install Prompt */}
+      <InstallPrompt />
     </div>
   );
 };
