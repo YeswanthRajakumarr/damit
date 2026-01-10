@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_logs: {
+        Row: {
+          cravings: number | null
+          created_at: string
+          diet: number | null
+          energy_level: number | null
+          good_thing: string | null
+          hunger_level: number | null
+          id: string
+          log_date: string
+          proud_of_yourself: string | null
+          sleep_last_night: number | null
+          step_count: number | null
+          stress_fatigue: number | null
+          updated_at: string
+          water_intake: number | null
+          workout: number | null
+        }
+        Insert: {
+          cravings?: number | null
+          created_at?: string
+          diet?: number | null
+          energy_level?: number | null
+          good_thing?: string | null
+          hunger_level?: number | null
+          id?: string
+          log_date?: string
+          proud_of_yourself?: string | null
+          sleep_last_night?: number | null
+          step_count?: number | null
+          stress_fatigue?: number | null
+          updated_at?: string
+          water_intake?: number | null
+          workout?: number | null
+        }
+        Update: {
+          cravings?: number | null
+          created_at?: string
+          diet?: number | null
+          energy_level?: number | null
+          good_thing?: string | null
+          hunger_level?: number | null
+          id?: string
+          log_date?: string
+          proud_of_yourself?: string | null
+          sleep_last_night?: number | null
+          step_count?: number | null
+          stress_fatigue?: number | null
+          updated_at?: string
+          water_intake?: number | null
+          workout?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
