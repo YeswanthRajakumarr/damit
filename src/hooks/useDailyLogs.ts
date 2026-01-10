@@ -39,9 +39,13 @@ export const useSaveDailyLog = () => {
 
   return useMutation({
     mutationFn: async (answers: Record<number, string | number | null>) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
       const today = new Date().toISOString().split("T")[0];
 
       const logData = {
+        user_id: user.id,
         log_date: today,
         diet: answers[1] as number | null,
         energy_level: answers[2] as number | null,
@@ -59,7 +63,7 @@ export const useSaveDailyLog = () => {
       // Upsert - update if exists for today, otherwise insert
       const { data, error } = await supabase
         .from("daily_logs")
-        .upsert(logData, { onConflict: "log_date" })
+        .upsert(logData, { onConflict: "user_id,log_date" })
         .select()
         .single();
 

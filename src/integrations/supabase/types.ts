@@ -29,6 +29,7 @@ export type Database = {
           step_count: number | null
           stress_fatigue: number | null
           updated_at: string
+          user_id: string | null
           water_intake: number | null
           workout: number | null
         }
@@ -46,6 +47,7 @@ export type Database = {
           step_count?: number | null
           stress_fatigue?: number | null
           updated_at?: string
+          user_id?: string | null
           water_intake?: number | null
           workout?: number | null
         }
@@ -63,8 +65,36 @@ export type Database = {
           step_count?: number | null
           stress_fatigue?: number | null
           updated_at?: string
+          user_id?: string | null
           water_intake?: number | null
           workout?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

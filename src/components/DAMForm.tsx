@@ -5,16 +5,26 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Leaf, Table2 } from "lucide-react";
+import { Leaf, Table2, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export const DAMForm = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | number | null>>({});
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(0);
+  const { signOut } = useAuthContext();
 
   const currentQuestion = questions[currentIndex];
+
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error("Failed to logout");
+    }
+  };
 
   const handleAnswer = useCallback((value: string | number) => {
     setAnswers(prev => ({
@@ -55,7 +65,15 @@ export const DAMForm = () => {
         className="px-6 pt-8 pb-4"
       >
         <div className="flex items-center justify-between mb-6">
-          <div className="w-24" /> {/* Spacer for centering */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+                       text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-all"
+            title="Logout"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl gradient-primary">
               <Leaf className="w-6 h-6 text-primary-foreground" />
