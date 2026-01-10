@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { questions, formatAnswerForCopy, Question } from "@/data/questions";
-import { Copy, Check, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { Copy, Check, RotateCcw, Table2, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useSaveDailyLog } from "@/hooks/useDailyLogs";
+import { Link } from "react-router-dom";
 
 interface ResultsViewProps {
   answers: Record<number, string | number | null>;
@@ -11,6 +13,23 @@ interface ResultsViewProps {
 
 export const ResultsView = ({ answers, onReset }: ResultsViewProps) => {
   const [copied, setCopied] = useState(false);
+  const saveMutation = useSaveDailyLog();
+  const [saved, setSaved] = useState(false);
+
+  // Save to database when component mounts
+  useEffect(() => {
+    if (!saved) {
+      saveMutation.mutate(answers, {
+        onSuccess: () => {
+          setSaved(true);
+          toast.success("DAM saved to database!");
+        },
+        onError: () => {
+          toast.error("Failed to save DAM");
+        },
+      });
+    }
+  }, []);
 
   const generateCopyText = () => {
     const date = new Date().toLocaleDateString('en-US', {
@@ -126,34 +145,50 @@ export const ResultsView = ({ answers, onReset }: ResultsViewProps) => {
           ))}
         </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={onReset}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl
-                       bg-secondary text-secondary-foreground font-medium
-                       hover:bg-secondary/80 transition-all"
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3">
+            <button
+              onClick={onReset}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                         bg-secondary text-secondary-foreground font-medium
+                         hover:bg-secondary/80 transition-all"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Start Over
+            </button>
+            <button
+              onClick={handleCopy}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                         gradient-primary text-primary-foreground font-medium
+                         shadow-soft hover:shadow-card transition-all"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Copy DAM
+                </>
+              )}
+            </button>
+          </div>
+          
+          <Link
+            to="/logs"
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                       border border-border text-foreground font-medium
+                       hover:bg-secondary/50 transition-all"
           >
-            <RotateCcw className="w-4 h-4" />
-            Start Over
-          </button>
-          <button
-            onClick={handleCopy}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl
-                       gradient-primary text-primary-foreground font-medium
-                       shadow-soft hover:shadow-card transition-all"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4" />
-                Copied!
-              </>
+            {saveMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <>
-                <Copy className="w-4 h-4" />
-                Copy DAM
-              </>
+              <Table2 className="w-4 h-4" />
             )}
-          </button>
+            View All Logs
+          </Link>
         </div>
       </div>
 
