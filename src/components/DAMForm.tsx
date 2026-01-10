@@ -5,7 +5,8 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Leaf } from "lucide-react";
+import { Leaf, Table2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const DAMForm = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,11 +54,22 @@ export const DAMForm = () => {
         animate={{ opacity: 1, y: 0 }}
         className="px-6 pt-8 pb-4"
       >
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <div className="p-2 rounded-xl gradient-primary">
-            <Leaf className="w-6 h-6 text-primary-foreground" />
+        <div className="flex items-center justify-between mb-6">
+          <div className="w-24" /> {/* Spacer for centering */}
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-xl gradient-primary">
+              <Leaf className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <h1 className="text-xl font-bold text-foreground">DAM</h1>
           </div>
-          <h1 className="text-xl font-bold text-foreground">DAM</h1>
+          <Link
+            to="/logs"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+                       bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all"
+          >
+            <Table2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Records</span>
+          </Link>
         </div>
         
         {!isComplete && (
