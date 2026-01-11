@@ -131,9 +131,14 @@ export default function Auth() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Daily Accountable Message
-        </p>
+        <div className="text-center mt-6 space-y-1">
+          <p className="text-xs text-muted-foreground">
+            Daily Accountable Message
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Built with ♥️ by Yeswanth Rajakumar
+          </p>
+        </div>
       </motion.div>
     </div>
   );
