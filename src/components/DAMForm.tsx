@@ -119,10 +119,7 @@ export const DAMForm = () => {
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-4 text-center space-y-1">
-        <p className="text-xs text-muted-foreground">
-          Daily Accountable Message
-        </p>
+      <footer className="px-6 py-4 text-center">
         <p className="text-xs text-muted-foreground">
           Built with ♥️ by Yeswanth Rajakumar
         </p>
