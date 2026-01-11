@@ -4,6 +4,7 @@ import { Leaf, Loader2, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -40,7 +41,12 @@ export default function Auth() {
       setLoading(false);
     }
   };
-  return <div className="min-h-screen gradient-warm flex flex-col items-center justify-center px-6">
+  return <div className="min-h-screen gradient-warm flex flex-col items-center justify-center px-6 relative">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <motion.div initial={{
       opacity: 0,
       y: 20
