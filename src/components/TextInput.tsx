@@ -19,6 +19,7 @@ export const TextInput = ({ value, onChange, placeholder, type = "text" }: TextI
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
+          maxLength={1000}
           className="w-full p-4 rounded-xl bg-card border border-border shadow-soft
                      text-foreground placeholder:text-muted-foreground
                      focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary

@@ -67,6 +67,7 @@ export default function Auth() {
                   placeholder="Display Name"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
+                  maxLength={100}
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary text-foreground 
                              placeholder:text-muted-foreground border-0 focus:ring-2 
                              focus:ring-primary/50 outline-none transition-all"
