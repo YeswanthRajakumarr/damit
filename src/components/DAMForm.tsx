@@ -5,16 +5,21 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Leaf, Table2, LogOut } from "lucide-react";
+import { Leaf, Table2, LogOut, CalendarIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 export const DAMForm = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | number | null>>({});
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { signOut } = useAuthContext();
 
   const currentQuestion = questions[currentIndex];
@@ -54,6 +59,7 @@ export const DAMForm = () => {
     setAnswers({});
     setIsComplete(false);
     setDirection(0);
+    setSelectedDate(new Date());
   }, []);
 
   return (
@@ -89,6 +95,36 @@ export const DAMForm = () => {
             <span className="hidden sm:inline">Records</span>
           </Link>
         </div>
+
+        {/* Date Picker */}
+        {!isComplete && (
+          <div className="mb-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className={cn(
+                    "w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl",
+                    "bg-secondary text-secondary-foreground font-medium",
+                    "hover:bg-secondary/80 transition-all border border-border"
+                  )}
+                >
+                  <CalendarIcon className="w-4 h-4" />
+                  {format(selectedDate, "EEEE, MMMM d, yyyy")}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  disabled={(date) => date > new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
         
         {!isComplete && (
           <ProgressBar current={currentIndex} total={questions.length} />
@@ -100,7 +136,7 @@ export const DAMForm = () => {
         <div className="w-full max-w-md mx-auto">
           <AnimatePresence mode="wait">
             {isComplete ? (
-              <ResultsView answers={answers} onReset={handleReset} />
+              <ResultsView answers={answers} onReset={handleReset} selectedDate={selectedDate} />
             ) : (
               <QuestionCard
                 key={currentQuestion.id}
