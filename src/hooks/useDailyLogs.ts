@@ -34,6 +34,28 @@ export const useDailyLogs = () => {
   });
 };
 
+export const useCheckExistingLog = (date: Date) => {
+  const dateStr = date.toISOString().split("T")[0];
+  
+  return useQuery({
+    queryKey: ["daily-log-check", dateStr],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("daily_logs")
+        .select("id, log_date, updated_at")
+        .eq("log_date", dateStr)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
 interface SaveDailyLogParams {
   answers: Record<number, string | number | null>;
   selectedDate: Date;

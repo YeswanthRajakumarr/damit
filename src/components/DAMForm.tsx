@@ -5,7 +5,7 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Leaf, Table2, LogOut, CalendarIcon } from "lucide-react";
+import { Leaf, Table2, LogOut, CalendarIcon, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useCheckExistingLog } from "@/hooks/useDailyLogs";
 
 export const DAMForm = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -21,6 +22,7 @@ export const DAMForm = () => {
   const [direction, setDirection] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { signOut } = useAuthContext();
+  const { data: existingLog, isLoading: checkingLog } = useCheckExistingLog(selectedDate);
 
   const currentQuestion = questions[currentIndex];
 
@@ -123,6 +125,20 @@ export const DAMForm = () => {
                 />
               </PopoverContent>
             </Popover>
+            
+            {/* Existing log warning */}
+            {existingLog && !checkingLog && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30"
+              >
+                <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <span className="text-xs text-amber-600 dark:text-amber-400">
+                  A log exists for this date. Submitting will update it.
+                </span>
+              </motion.div>
+            )}
           </div>
         )}
         
