@@ -43,6 +43,7 @@ export const questions: Question[] = [
     options: [
       { value: 1, label: "Very High" },
       { value: 0.5, label: "High" },
+      { value: 0.25, label: "Low" },
       { value: 0, label: "Nill" },
     ],
   },
@@ -86,6 +87,7 @@ export const questions: Question[] = [
     options: [
       { value: 1, label: "Very High" },
       { value: 0.5, label: "High" },
+      { value: 0.25, label: "Low" },
       { value: 0, label: "Nill" },
     ],
   },
@@ -96,6 +98,7 @@ export const questions: Question[] = [
     options: [
       { value: 1, label: "Very High" },
       { value: 0.5, label: "High" },
+      { value: 0.25, label: "Low" },
       { value: 0, label: "Nill" },
     ],
   },
