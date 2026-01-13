@@ -86,6 +86,7 @@ export const QuestionCard = ({
                 options={question.options}
                 value={answer as number | null}
                 onChange={onAnswer}
+                invertColors={question.invertColors}
               />
             )}
             {question.type === "text" && (
