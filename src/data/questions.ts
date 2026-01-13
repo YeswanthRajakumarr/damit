@@ -11,6 +11,7 @@ export interface Question {
   type: QuestionType;
   options?: RatingOption[];
   placeholder?: string;
+  invertColors?: boolean; // For questions where high values are bad (stress, cravings, hunger)
 }
 
 export const questions: Question[] = [
@@ -38,6 +39,7 @@ export const questions: Question[] = [
   },
   {
     id: 3,
+    invertColors: true,
     question: "Stress & Fatigue",
     type: "rating",
     options: [
@@ -82,6 +84,7 @@ export const questions: Question[] = [
   },
   {
     id: 7,
+    invertColors: true,
     question: "Cravings",
     type: "rating",
     options: [
@@ -93,6 +96,7 @@ export const questions: Question[] = [
   },
   {
     id: 8,
+    invertColors: true,
     question: "Hunger level",
     type: "rating",
     options: [
