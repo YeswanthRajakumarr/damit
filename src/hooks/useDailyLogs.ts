@@ -34,19 +34,24 @@ export const useDailyLogs = () => {
   });
 };
 
+interface SaveDailyLogParams {
+  answers: Record<number, string | number | null>;
+  selectedDate: Date;
+}
+
 export const useSaveDailyLog = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (answers: Record<number, string | number | null>) => {
+    mutationFn: async ({ answers, selectedDate }: SaveDailyLogParams) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const today = new Date().toISOString().split("T")[0];
+      const logDate = selectedDate.toISOString().split("T")[0];
 
       const logData = {
         user_id: user.id,
-        log_date: today,
+        log_date: logDate,
         diet: answers[1] as number | null,
         energy_level: answers[2] as number | null,
         stress_fatigue: answers[3] as number | null,

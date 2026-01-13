@@ -5,13 +5,15 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useSaveDailyLog } from "@/hooks/useDailyLogs";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 interface ResultsViewProps {
   answers: Record<number, string | number | null>;
   onReset: () => void;
+  selectedDate: Date;
 }
 
-export const ResultsView = ({ answers, onReset }: ResultsViewProps) => {
+export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps) => {
   const [copied, setCopied] = useState(false);
   const saveMutation = useSaveDailyLog();
   const [saved, setSaved] = useState(false);
@@ -19,7 +21,7 @@ export const ResultsView = ({ answers, onReset }: ResultsViewProps) => {
   // Save to database when component mounts
   useEffect(() => {
     if (!saved) {
-      saveMutation.mutate(answers, {
+      saveMutation.mutate({ answers, selectedDate }, {
         onSuccess: () => {
           setSaved(true);
           toast.success("DAM saved to database!");
@@ -32,15 +34,10 @@ export const ResultsView = ({ answers, onReset }: ResultsViewProps) => {
   }, []);
 
   const generateCopyText = () => {
-    const date = new Date().toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const dateStr = format(selectedDate, "EEEE, MMMM d, yyyy");
 
     let text = `DAM (Daily Accountable Message)\n`;
-    text += `📅 ${date}\n`;
+    text += `📅 ${dateStr}\n`;
     text += `${"─".repeat(30)}\n\n`;
     text += `Rate your day:\n\n`;
 
