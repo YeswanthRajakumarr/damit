@@ -86,7 +86,7 @@ export const DAMForm = () => {
             <div className="p-2 rounded-xl gradient-primary">
               <Leaf className="w-6 h-6 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">DAM</h1>
+            <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
           </div>
           <Link
             to="/logs"
