@@ -70,7 +70,7 @@ export default function LogsTable() {
             <div className="p-2 rounded-xl gradient-primary">
               <Leaf className="w-6 h-6 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">DAM Logs</h1>
+            <h1 className="text-xl font-bold text-foreground">DAMit! Logs</h1>
           </div>
           <div className="w-16" /> {/* Spacer for centering */}
         </div>
