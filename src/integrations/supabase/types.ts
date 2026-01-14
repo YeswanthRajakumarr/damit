@@ -27,6 +27,7 @@ export type Database = {
           proud_of_yourself: string | null
           sleep_last_night: number | null
           step_count: number | null
+          step_goal_reached: number | null
           stress_fatigue: number | null
           updated_at: string
           user_id: string | null
@@ -45,6 +46,7 @@ export type Database = {
           proud_of_yourself?: string | null
           sleep_last_night?: number | null
           step_count?: number | null
+          step_goal_reached?: number | null
           stress_fatigue?: number | null
           updated_at?: string
           user_id?: string | null
@@ -63,6 +65,7 @@ export type Database = {
           proud_of_yourself?: string | null
           sleep_last_night?: number | null
           step_count?: number | null
+          step_goal_reached?: number | null
           stress_fatigue?: number | null
           updated_at?: string
           user_id?: string | null

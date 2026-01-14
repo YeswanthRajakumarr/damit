@@ -12,6 +12,7 @@ export interface DailyLog {
   sleep_last_night: number | null;
   cravings: number | null;
   hunger_level: number | null;
+  step_goal_reached: number | null;
   good_thing: string | null;
   step_count: number | null;
   proud_of_yourself: string | null;
@@ -86,9 +87,10 @@ export const useSaveDailyLog = () => {
         sleep_last_night: answers[6] as number | null,
         cravings: answers[7] as number | null,
         hunger_level: answers[8] as number | null,
-        good_thing: answers[9] as string | null,
-        step_count: answers[10] ? Number(answers[10]) : null,
-        proud_of_yourself: answers[11] as string | null,
+        step_goal_reached: answers[9] as number | null,
+        good_thing: answers[10] as string | null,
+        step_count: answers[11] ? Number(answers[11]) : null,
+        proud_of_yourself: answers[12] as string | null,
       };
 
       // Upsert - update if exists for today, otherwise insert
