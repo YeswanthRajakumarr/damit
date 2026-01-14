@@ -94,7 +94,7 @@ export default function LogsTable() {
             </div>
           ) : !logs || logs.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No logs yet. Complete your first DAM!
+              No logs yet. Complete your first DAMit!
             </div>
           ) : (
             <div className="overflow-x-auto">

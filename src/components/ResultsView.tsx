@@ -24,10 +24,10 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
       saveMutation.mutate({ answers, selectedDate }, {
         onSuccess: () => {
           setSaved(true);
-          toast.success("DAM saved to database!");
+          toast.success("DAMit! saved to database!");
         },
         onError: () => {
-          toast.error("Failed to save DAM");
+          toast.error("Failed to save DAMit!");
         },
       });
     }
@@ -36,7 +36,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
   const generateCopyText = () => {
     const dateStr = format(selectedDate, "EEEE, MMMM d, yyyy");
 
-    let text = `DAM (Daily Accountable Message)\n`;
+    let text = `DAMit! (Daily Accountable Message)\n`;
     text += `📅 ${dateStr}\n`;
     text += `${"─".repeat(30)}\n\n`;
     text += `Rate your day:\n\n`;
@@ -108,7 +108,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
             Great job! 🎉
           </h2>
           <p className="text-muted-foreground">
-            Your DAM is ready to share
+            Your DAMit! is ready to share
           </p>
         </div>
 
@@ -167,7 +167,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
               ) : (
                 <>
                   <Copy className="w-4 h-4" />
-                  Copy DAM
+                  Copy DAMit!
                 </>
               )}
             </button>
@@ -190,7 +190,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
-        Paste your DAM anywhere to share your daily progress
+        Paste your DAMit! anywhere to share your daily progress
       </p>
     </motion.div>
   );
