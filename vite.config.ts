@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
       manifest: {
-        name: "DAM - Daily Accountable Message",
-        short_name: "DAM",
+        name: "DAMit! - Daily Accountable Message",
+        short_name: "DAMit!",
         description: "Track your daily wellness and accountability",
         theme_color: "#4d8066",
         background_color: "#f9f8f6",

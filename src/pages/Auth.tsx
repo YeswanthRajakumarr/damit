@@ -60,7 +60,7 @@ export default function Auth() {
           <div className="p-3 rounded-xl gradient-primary">
             <Leaf className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">DAM</h1>
+          <h1 className="text-2xl font-bold text-foreground">DAMit!</h1>
         </div>
 
         {/* Card */}
