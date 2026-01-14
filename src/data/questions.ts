@@ -108,18 +108,27 @@ export const questions: Question[] = [
   },
   {
     id: 9,
+    question: "Did you reach your 10K goal?",
+    type: "rating",
+    options: [
+      { value: 1, label: "Yes" },
+      { value: 0, label: "No" },
+    ],
+  },
+  {
+    id: 10,
     question: "One good thing about today",
     type: "text",
     placeholder: "Share something positive...",
   },
   {
-    id: 10,
+    id: 11,
     question: "Total step count?",
     type: "number",
     placeholder: "Enter your steps",
   },
   {
-    id: 11,
+    id: 12,
     question: "Proud of yourself?",
     type: "text",
     placeholder: "Tell us why...",
