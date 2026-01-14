@@ -1,6 +1,7 @@
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useDailyLogs } from "@/hooks/useDailyLogs";
-import { Leaf, ArrowLeft, Loader2 } from "lucide-react";
+import { Leaf, ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import {
@@ -30,8 +31,24 @@ const getValueColor = (value: number | null): string => {
   return "text-foreground";
 };
 
+type SortOrder = "asc" | "desc";
+
 export default function LogsTable() {
   const { data: logs, isLoading, error } = useDailyLogs();
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+
+  const sortedLogs = useMemo(() => {
+    if (!logs) return [];
+    return [...logs].sort((a, b) => {
+      const dateA = new Date(a.log_date).getTime();
+      const dateB = new Date(b.log_date).getTime();
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+  }, [logs, sortOrder]);
+
+  const toggleSort = () => {
+    setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+  };
 
   return (
     <div className="min-h-screen gradient-warm">
@@ -84,8 +101,18 @@ export default function LogsTable() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border/50">
-                    <TableHead className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[100px]">
-                      Date
+                    <TableHead 
+                      className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[100px] cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={toggleSort}
+                    >
+                      <div className="flex items-center gap-1">
+                        Date
+                        {sortOrder === "desc" ? (
+                          <ArrowDown className="w-4 h-4" />
+                        ) : (
+                          <ArrowUp className="w-4 h-4" />
+                        )}
+                      </div>
                     </TableHead>
                     <TableHead className="text-center min-w-[60px]">Diet</TableHead>
                     <TableHead className="text-center min-w-[70px]">Energy</TableHead>
@@ -101,7 +128,7 @@ export default function LogsTable() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {logs.map((log) => (
+                  {sortedLogs.map((log) => (
                     <TableRow key={log.id} className="border-border/30">
                       <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 font-medium">
                         {format(new Date(log.log_date), "MMM d")}
