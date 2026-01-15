@@ -49,6 +49,14 @@ export const QuestionCard = ({
     }
   };
 
+  const handleRatingChange = (value: number) => {
+    onAnswer(value);
+    // Auto-advance after a brief delay to show the selection
+    setTimeout(() => {
+      onNext();
+    }, 500);
+  };
+
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.div
@@ -85,7 +93,7 @@ export const QuestionCard = ({
               <RatingSelector
                 options={question.options}
                 value={answer as number | null}
-                onChange={onAnswer}
+                onChange={handleRatingChange}
               />
             )}
             {question.type === "text" && (
