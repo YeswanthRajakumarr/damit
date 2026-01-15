@@ -27,8 +27,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 15%;
 
-    /* Sage green primary */
-    --primary: 150 40% 40%;
+    /* Sage green primary - Deeper for better contrast */
+    --primary: 155 45% 38%;
     --primary-foreground: 0 0% 100%;
 
     /* Light sage secondary */
@@ -43,9 +43,9 @@
     --accent: 150 20% 90%;
     --accent-foreground: 150 35% 30%;
 
-    /* Success green */
-    --success: 150 50% 45%;
-    --success-foreground: 0 0% 100%;
+    /* Success green - Lighter and more distinct */
+    --success: 145 40% 55%;
+    --success-foreground: 145 40% 15%;
 
     /* Warning amber */
     --warning: 40 90% 55%;
@@ -69,13 +69,13 @@
     --shadow-soft: 0 4px 20px -4px hsl(150 20% 50% / 0.15);
     --shadow-card: 0 8px 30px -8px hsl(150 20% 50% / 0.2);
     --shadow-elevated: 0 20px 50px -15px hsl(150 20% 40% / 0.25);
-    
+
     --chart-1: 150 40% 50%;
     --chart-2: 180 35% 55%;
     --chart-3: 200 30% 50%;
     --chart-4: 120 30% 55%;
     --chart-5: 40 50% 55%;
-    
+
     --sidebar: 0 0% 100%;
     --sidebar-foreground: 220 15% 15%;
     --sidebar-primary: 150 40% 40%;
@@ -84,11 +84,11 @@
     --sidebar-accent-foreground: 150 35% 30%;
     --sidebar-border: 150 10% 88%;
     --sidebar-ring: 150 40% 40%;
-    
+
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    
+
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
@@ -100,7 +100,7 @@
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
-  
+
   .dark {
     /* Dark slate background */
     --background: 220 15% 10%;
@@ -113,8 +113,8 @@
     --popover: 220 15% 14%;
     --popover-foreground: 210 20% 95%;
 
-    /* Sage green primary - lighter for dark mode */
-    --primary: 150 45% 50%;
+    /* Sage green primary - Lighter for dark mode */
+    --primary: 155 50% 55%;
     --primary-foreground: 220 15% 10%;
 
     /* Dark secondary */
@@ -129,9 +129,9 @@
     --accent: 220 15% 22%;
     --accent-foreground: 210 20% 95%;
 
-    /* Success green */
-    --success: 150 50% 50%;
-    --success-foreground: 220 15% 10%;
+    /* Success green - Brighter for dark mode */
+    --success: 145 50% 65%;
+    --success-foreground: 145 50% 10%;
 
     /* Warning amber */
     --warning: 40 90% 55%;
@@ -155,13 +155,13 @@
     --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
     --shadow-card: 0 8px 30px -8px hsl(0 0% 0% / 0.5);
     --shadow-elevated: 0 20px 50px -15px hsl(0 0% 0% / 0.6);
-    
+
     --chart-1: 150 50% 55%;
     --chart-2: 180 40% 60%;
     --chart-3: 200 35% 55%;
     --chart-4: 120 35% 60%;
     --chart-5: 40 55% 60%;
-    
+
     --sidebar: 220 15% 12%;
     --sidebar-foreground: 210 20% 95%;
     --sidebar-primary: 150 45% 50%;
@@ -170,7 +170,7 @@
     --sidebar-accent-foreground: 210 20% 95%;
     --sidebar-border: 220 15% 22%;
     --sidebar-ring: 150 45% 50%;
-    
+
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.2);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.2);
     --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);

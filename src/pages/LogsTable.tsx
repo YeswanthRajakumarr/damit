@@ -25,11 +25,10 @@ const formatValue = (value: number | null): string => {
 
 const getValueColor = (value: number | null): string => {
   if (value === null) return "text-muted-foreground";
-  if (value === 1) return "text-green-600";
-  if (value === 0.5) return "text-yellow-600";
-  if (value === 0) return "text-orange-500";
-  if (value === -1) return "text-red-500";
-  return "text-foreground";
+  if (value >= 1) return "text-primary"; // Bright Green
+  if (value >= 0.5) return "text-success"; // Green
+  if (value >= 0.25) return "text-warning"; // Orange
+  return "text-destructive"; // Red
 };
 
 type SortOrder = "asc" | "desc";
@@ -184,16 +183,16 @@ export default function LogsTable() {
           className="mt-4 flex flex-wrap justify-center gap-4 text-sm"
         >
           <span className="flex items-center gap-1">
-            <span className="text-green-600 font-bold">✓</span> Perfect/Very High
+            <span className="text-primary font-bold">✓</span> Excellent/Nill
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-yellow-600 font-bold">½</span> Good/High
+            <span className="text-success font-bold">½</span> Good/Low
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-orange-500 font-bold">○</span> Bad/Nill
+            <span className="text-warning font-bold">○</span> Fair/High
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-red-500 font-bold">✗</span> Too Bad/Low
+            <span className="text-destructive font-bold">✗</span> Poor/Very High
           </span>
         </motion.div>
       </main>

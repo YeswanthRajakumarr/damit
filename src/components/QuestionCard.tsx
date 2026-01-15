@@ -86,7 +86,6 @@ export const QuestionCard = ({
                 options={question.options}
                 value={answer as number | null}
                 onChange={onAnswer}
-                invertColors={question.invertColors}
               />
             )}
             {question.type === "text" && (
@@ -112,8 +111,8 @@ export const QuestionCard = ({
               onClick={onPrev}
               disabled={isFirst}
               className={`flex items-center justify-start gap-1 justify-self-start px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap
-                ${isFirst 
-                  ? "opacity-30 cursor-not-allowed" 
+                ${isFirst
+                  ? "opacity-30 cursor-not-allowed"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
             >
@@ -126,9 +125,8 @@ export const QuestionCard = ({
                 {[...Array(11)].map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all ${
-                      i === question.id - 1 ? "bg-primary w-3 sm:w-4" : "bg-secondary"
-                    }`}
+                    className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all ${i === question.id - 1 ? "bg-primary w-3 sm:w-4" : "bg-secondary"
+                      }`}
                   />
                 ))}
               </div>
