@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: ["favicon.png", "apple-touch-icon.png", "mask-icon.svg"],
       manifest: {
         name: "DAMit! - Daily Accountable Message",
         short_name: "DAMit!",

@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useDailyLogs } from "@/hooks/useDailyLogs";
-import { Leaf, ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Table,
   TableBody,
@@ -61,18 +62,19 @@ export default function LogsTable() {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back</span>
+            <span className="hidden sm:inline">Back</span>
           </Link>
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl gradient-primary">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
             <h1 className="text-xl font-bold text-foreground">DAMit! Logs</h1>
           </div>
-          <div className="w-16" /> {/* Spacer for centering */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <div className="w-10 sm:w-16 hidden sm:block" /> {/* Spacer for centering */}
+          </div>
         </div>
       </motion.header>
 
@@ -101,7 +103,7 @@ export default function LogsTable() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border/50">
-                    <TableHead 
+                    <TableHead
                       className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[100px] cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={toggleSort}
                     >

@@ -5,7 +5,7 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Leaf, Table2, LogOut, CalendarIcon, AlertTriangle } from "lucide-react";
+import { Table2, LogOut, CalendarIcon, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 import { useCheckExistingLog } from "@/hooks/useDailyLogs";
 
 export const DAMForm = () => {
@@ -82,20 +83,23 @@ export const DAMForm = () => {
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Logout</span>
           </button>
+
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl gradient-primary">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
             <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
           </div>
-          <Link
-            to="/logs"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
-                       bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all"
-          >
-            <Table2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Records</span>
-          </Link>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link
+              to="/logs"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+                         bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all"
+            >
+              <Table2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Records</span>
+            </Link>
+          </div>
         </div>
 
         {/* Date Picker */}
@@ -125,7 +129,7 @@ export const DAMForm = () => {
                 />
               </PopoverContent>
             </Popover>
-            
+
             {/* Existing log warning */}
             {existingLog && !checkingLog && (
               <motion.div
@@ -141,7 +145,7 @@ export const DAMForm = () => {
             )}
           </div>
         )}
-        
+
         {!isComplete && (
           <ProgressBar current={currentIndex} total={questions.length} />
         )}
