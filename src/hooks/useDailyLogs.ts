@@ -87,7 +87,7 @@ export const useSaveDailyLog = () => {
         step_goal_reached: answers[9] as number | null,
         good_thing: answers[10] as string | null,
         step_count: answers[11] ? Number(answers[11]) : null,
-        proud_of_yourself: answers[12] as string | null,
+        proud_of_yourself: answers[12] === 1 ? "Yes" : answers[12] === 0 ? "No" : answers[12] as string | null,
       };
 
       // Upsert - update if exists for today, otherwise insert

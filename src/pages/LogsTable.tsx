@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { useDailyLogs } from "@/hooks/useDailyLogs";
-import { ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useDailyLogs, DailyLog } from "@/hooks/useDailyLogs";
+import { ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown, Copy, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { toast } from "sonner";
+import { questions, formatAnswerForCopy, Question } from "@/data/questions";
 import {
   Table,
   TableBody,
@@ -35,6 +37,7 @@ type SortOrder = "asc" | "desc";
 export default function LogsTable() {
   const { data: logs, isLoading, error } = useDailyLogs();
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const sortedLogs = useMemo(() => {
     if (!logs) return [];
@@ -47,6 +50,57 @@ export default function LogsTable() {
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+  };
+
+  const handleCopyRow = async (log: DailyLog) => {
+    const dateStr = format(new Date(log.log_date), "EEEE, MMMM d, yyyy");
+
+    // Map log fields to question IDs
+    const answers: Record<number, string | number | null> = {
+      1: log.diet,
+      2: log.energy_level,
+      3: log.stress_fatigue,
+      4: log.workout,
+      5: log.water_intake,
+      6: log.sleep_last_night,
+      7: log.cravings,
+      8: log.hunger_level,
+      9: log.step_goal_reached,
+      10: log.good_thing,
+      11: log.step_count,
+      12: log.proud_of_yourself,
+    };
+
+    let text = `DAMit! (Daily Accountable Message)\n`;
+    text += `📅 ${dateStr}\n`;
+    text += `${"─".repeat(30)}\n\n`;
+    text += `Rate your day:\n\n`;
+
+    questions.forEach((q: Question) => {
+      const answer = answers[q.id];
+      const formattedAnswer = formatAnswerForCopy(q, answer ?? null);
+
+      if (q.type === "rating" && q.options) {
+        const optionsStr = q.options
+          .map(o => `(${o.value > 0 ? '+' : ''}${o.value} = ${o.label})`)
+          .join(' ');
+        text += `${q.id}. ${q.question} ${optionsStr}\n`;
+      } else if (q.type === "number") {
+        text += `${q.id}. ${q.question} (In numbers)\n`;
+      } else {
+        text += `${q.id}. ${q.question}\n`;
+      }
+      text += `Ans: ${formattedAnswer}\n\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(log.id);
+      toast.success(`Copied log for ${format(new Date(log.log_date), "MMM d")}`);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      toast.error("Failed to copy");
+    }
   };
 
   return (
@@ -147,6 +201,7 @@ export default function LogsTable() {
                     <TableHead className="text-center min-w-[70px]">Steps</TableHead>
                     <TableHead className="min-w-[120px]">Good Thing</TableHead>
                     <TableHead className="text-center min-w-[70px]">Proud</TableHead>
+                    <TableHead className="text-center min-w-[60px]">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -213,6 +268,22 @@ export default function LogsTable() {
                           }
                           return <span className="text-muted-foreground">{val}</span>;
                         })()}
+                      </TableCell>
+                      <TableCell className="text-center py-2">
+                        <button
+                          onClick={() => handleCopyRow(log)}
+                          className={`p-1.5 rounded-lg transition-all ${copiedId === log.id
+                              ? "bg-success/20 text-success"
+                              : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                            }`}
+                          title="Copy this log"
+                        >
+                          {copiedId === log.id ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </button>
                       </TableCell>
                     </TableRow>
                   ))}
