@@ -43,10 +43,10 @@ export const questions: Question[] = [
     question: "Stress & Fatigue",
     type: "rating",
     options: [
-      { value: 1, label: "Very High" },
-      { value: 0.5, label: "High" },
-      { value: 0.25, label: "Low" },
-      { value: 0, label: "Nill" },
+      { value: 0, label: "Very High" },
+      { value: 0.25, label: "High" },
+      { value: 0.5, label: "Low" },
+      { value: 1, label: "Nill" },
     ],
   },
   {
@@ -88,10 +88,10 @@ export const questions: Question[] = [
     question: "Cravings",
     type: "rating",
     options: [
-      { value: 1, label: "Very High" },
-      { value: 0.5, label: "High" },
-      { value: 0.25, label: "Low" },
-      { value: 0, label: "Nill" },
+      { value: 0, label: "Very High" },
+      { value: 0.25, label: "High" },
+      { value: 0.5, label: "Low" },
+      { value: 1, label: "Nill" },
     ],
   },
   {
@@ -100,10 +100,10 @@ export const questions: Question[] = [
     question: "Hunger level",
     type: "rating",
     options: [
-      { value: 1, label: "Very High" },
-      { value: 0.5, label: "High" },
-      { value: 0.25, label: "Low" },
-      { value: 0, label: "Nill" },
+      { value: 0, label: "Very High" },
+      { value: 0.25, label: "High" },
+      { value: 0.5, label: "Low" },
+      { value: 1, label: "Nill" },
     ],
   },
   {
