@@ -5,7 +5,7 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Table2, LogOut, CalendarIcon, AlertTriangle } from "lucide-react";
+import { Table2, CalendarIcon, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
 import { useCheckExistingLog } from "@/hooks/useDailyLogs";
 
 export const DAMForm = () => {
@@ -22,17 +23,9 @@ export const DAMForm = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { signOut } = useAuthContext();
   const { data: existingLog, isLoading: checkingLog } = useCheckExistingLog(selectedDate);
 
   const currentQuestion = questions[currentIndex];
-
-  const handleLogout = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error("Failed to logout");
-    }
-  };
 
   const handleAnswer = useCallback((value: string | number) => {
     setAnswers(prev => ({
@@ -74,15 +67,7 @@ export const DAMForm = () => {
         className="px-6 pt-8 pb-4"
       >
         <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
-                       text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-all"
-            title="Logout"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
+          <div className="w-10 sm:w-32" /> {/* Layout balancer */}
 
           <div className="flex items-center gap-2">
             <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
@@ -94,11 +79,13 @@ export const DAMForm = () => {
             <Link
               to="/logs"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
-                         bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all"
+                         bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all 
+                         shadow-soft animate-glow border border-primary/20"
             >
               <Table2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Records</span>
+              <span className="hidden sm:inline">Past DAMs</span>
             </Link>
+            <UserMenu />
           </div>
         </div>
 

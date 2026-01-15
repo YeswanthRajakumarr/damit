@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, ArrowUpDown, ArrowUp, ArrowDown, Copy, Check } from
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { UserMenu } from "@/components/UserMenu";
 import { toast } from "sonner";
 import { questions, formatAnswerForCopy, Question } from "@/data/questions";
 import {
@@ -121,11 +122,11 @@ export default function LogsTable() {
           </Link>
           <div className="flex items-center gap-2">
             <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-            <h1 className="text-xl font-bold text-foreground">DAMit! Logs</h1>
+            <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <div className="w-10 sm:w-16 hidden sm:block" /> {/* Spacer for centering */}
+            <UserMenu />
           </div>
         </div>
       </motion.header>
@@ -273,8 +274,8 @@ export default function LogsTable() {
                         <button
                           onClick={() => handleCopyRow(log)}
                           className={`p-1.5 rounded-lg transition-all ${copiedId === log.id
-                              ? "bg-success/20 text-success"
-                              : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                            ? "bg-success/20 text-success"
+                            : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                             }`}
                           title="Copy this log"
                         >
