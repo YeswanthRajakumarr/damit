@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { formatDateLocal } from "@/lib/utils";
 
 export interface DailyLog {
   id: string;
@@ -36,12 +37,8 @@ export const useDailyLogs = () => {
 };
 
 export const useCheckExistingLog = (date: Date) => {
-  // Use local date to avoid timezone issues (toISOString converts to UTC)
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const dateStr = `${year}-${month}-${day}`;
-  
+  const dateStr = formatDateLocal(date);
+
   return useQuery({
     queryKey: ["daily-log-check", dateStr],
     queryFn: async () => {
@@ -74,7 +71,7 @@ export const useSaveDailyLog = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const logDate = selectedDate.toISOString().split("T")[0];
+      const logDate = formatDateLocal(selectedDate);
 
       const logData = {
         user_id: user.id,

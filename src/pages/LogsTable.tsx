@@ -16,19 +16,18 @@ import {
 
 const formatValue = (value: number | null): string => {
   if (value === null) return "-";
-  if (value === 1) return "✓";
-  if (value === 0.5) return "½";
-  if (value === 0) return "○";
-  if (value === -1) return "✗";
-  return String(value);
+  if (value >= 1) return "✓";
+  if (value >= 0.5) return "½";
+  if (value >= 0 || value === 0.25) return "○";
+  return "✗";
 };
 
 const getValueColor = (value: number | null): string => {
   if (value === null) return "text-muted-foreground";
-  if (value >= 1) return "text-primary"; // Bright Green
-  if (value >= 0.5) return "text-success"; // Green
-  if (value >= 0.25) return "text-warning"; // Orange
-  return "text-destructive"; // Red
+  if (value >= 1) return "text-primary";
+  if (value >= 0.5) return "text-success";
+  if (value >= 0 || value === 0.25) return "text-warning";
+  return "text-destructive";
 };
 
 type SortOrder = "asc" | "desc";
@@ -78,7 +77,28 @@ export default function LogsTable() {
       </motion.header>
 
       {/* Main Content */}
-      <main className="px-4 pb-8">
+      <main className="px-4 pb-8 space-y-4">
+        {/* Legend */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-wrap justify-center gap-4 text-sm"
+        >
+          <span className="flex items-center gap-1">
+            <span className="text-primary font-bold">✓</span> Excellent/Nill
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-success font-bold">½</span> Good/Low
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-warning font-bold">○</span> Fair/High
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-destructive font-bold">✗</span> Poor/Very High
+          </span>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,49 +143,76 @@ export default function LogsTable() {
                     <TableHead className="text-center min-w-[60px]">Sleep</TableHead>
                     <TableHead className="text-center min-w-[70px]">Cravings</TableHead>
                     <TableHead className="text-center min-w-[70px]">Hunger</TableHead>
-                    <TableHead className="min-w-[120px]">Good Thing</TableHead>
+                    <TableHead className="text-center min-w-[70px]">10K Goal</TableHead>
                     <TableHead className="text-center min-w-[70px]">Steps</TableHead>
-                    <TableHead className="min-w-[120px]">Proud</TableHead>
+                    <TableHead className="min-w-[120px]">Good Thing</TableHead>
+                    <TableHead className="text-center min-w-[70px]">Proud</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sortedLogs.map((log) => (
                     <TableRow key={log.id} className="border-border/30">
-                      <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 font-medium">
+                      <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 font-medium py-2">
                         {format(new Date(log.log_date), "MMM d")}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.diet)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.diet)}`}>
                         {formatValue(log.diet)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.energy_level)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.energy_level)}`}>
                         {formatValue(log.energy_level)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.stress_fatigue)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.stress_fatigue)}`}>
                         {formatValue(log.stress_fatigue)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.workout)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.workout)}`}>
                         {formatValue(log.workout)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.water_intake)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.water_intake)}`}>
                         {formatValue(log.water_intake)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.sleep_last_night)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.sleep_last_night)}`}>
                         {formatValue(log.sleep_last_night)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.cravings)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.cravings)}`}>
                         {formatValue(log.cravings)}
                       </TableCell>
-                      <TableCell className={`text-center font-bold ${getValueColor(log.hunger_level)}`}>
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.hunger_level)}`}>
                         {formatValue(log.hunger_level)}
                       </TableCell>
-                      <TableCell className="max-w-[150px] truncate" title={log.good_thing || ""}>
-                        {log.good_thing || "-"}
+                      <TableCell className={`text-center font-bold py-2 ${getValueColor(log.step_goal_reached)}`}>
+                        {formatValue(log.step_goal_reached)}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center py-2">
                         {log.step_count?.toLocaleString() || "-"}
                       </TableCell>
-                      <TableCell className="max-w-[150px] truncate" title={log.proud_of_yourself || ""}>
-                        {log.proud_of_yourself || "-"}
+                      <TableCell className="max-w-[150px] truncate py-2" title={log.good_thing || ""}>
+                        {log.good_thing || "-"}
+                      </TableCell>
+                      <TableCell className="text-center py-2">
+                        {(() => {
+                          const val = log.proud_of_yourself;
+                          if (val === null || val === "") return "-";
+
+                          const strVal = String(val).toLowerCase();
+                          const isYes = ["1", "yes", "yeah"].includes(strVal);
+                          const isNo = ["0", "no"].includes(strVal);
+
+                          if (isYes) {
+                            return (
+                              <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-success/10 text-success text-[10px] font-bold border border-success/20 uppercase tracking-wider">
+                                Yes
+                              </span>
+                            );
+                          }
+                          if (isNo) {
+                            return (
+                              <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-destructive/10 text-destructive text-[10px] font-bold border border-destructive/20 uppercase tracking-wider">
+                                No
+                              </span>
+                            );
+                          }
+                          return <span className="text-muted-foreground">{val}</span>;
+                        })()}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -173,27 +220,6 @@ export default function LogsTable() {
               </Table>
             </div>
           )}
-        </motion.div>
-
-        {/* Legend */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mt-4 flex flex-wrap justify-center gap-4 text-sm"
-        >
-          <span className="flex items-center gap-1">
-            <span className="text-primary font-bold">✓</span> Excellent/Nill
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-success font-bold">½</span> Good/Low
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-warning font-bold">○</span> Fair/High
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-destructive font-bold">✗</span> Poor/Very High
-          </span>
         </motion.div>
       </main>
     </div>

@@ -126,8 +126,11 @@ export const questions: Question[] = [
   {
     id: 12,
     question: "Proud of yourself?",
-    type: "text",
-    placeholder: "Tell us why...",
+    type: "rating",
+    options: [
+      { value: 1, label: "Yes" },
+      { value: 0, label: "No" },
+    ],
   },
 ];
 
