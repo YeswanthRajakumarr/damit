@@ -9,7 +9,7 @@ import { Table2, CalendarIcon, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, subDays, startOfToday, isSameDay } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -116,6 +116,31 @@ export const DAMForm = () => {
                 />
               </PopoverContent>
             </Popover>
+
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => setSelectedDate(startOfToday())}
+                className={cn(
+                  "flex-1 py-1.5 rounded-lg text-xs font-medium transition-all border",
+                  isSameDay(selectedDate, startOfToday())
+                    ? "bg-primary/10 border-primary/30 text-primary shadow-sm"
+                    : "bg-secondary/50 border-border text-muted-foreground hover:bg-secondary"
+                )}
+              >
+                Today
+              </button>
+              <button
+                onClick={() => setSelectedDate(subDays(startOfToday(), 1))}
+                className={cn(
+                  "flex-1 py-1.5 rounded-lg text-xs font-medium transition-all border",
+                  isSameDay(selectedDate, subDays(startOfToday(), 1))
+                    ? "bg-primary/10 border-primary/30 text-primary shadow-sm"
+                    : "bg-secondary/50 border-border text-muted-foreground hover:bg-secondary"
+                )}
+              >
+                Yesterday
+              </button>
+            </div>
 
             {/* Existing log warning */}
             {existingLog && !checkingLog && (

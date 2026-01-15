@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useSaveDailyLog } from "@/hooks/useDailyLogs";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import confetti from "canvas-confetti";
 
 interface ResultsViewProps {
   answers: Record<number, string | number | null>;
@@ -25,6 +26,13 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
         onSuccess: () => {
           setSaved(true);
           toast.success("DAMit! saved to database!");
+
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#4ade80', '#22c55e', '#16a34a', '#facc15']
+          });
         },
         onError: () => {
           toast.error("Failed to save DAMit!");
@@ -44,7 +52,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
     questions.forEach((q: Question) => {
       const answer = answers[q.id];
       const formattedAnswer = formatAnswerForCopy(q, answer ?? null);
-      
+
       if (q.type === "rating" && q.options) {
         const optionsStr = q.options
           .map(o => `(${o.value > 0 ? '+' : ''}${o.value} = ${o.label})`)
@@ -63,7 +71,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
 
   const handleCopy = async () => {
     const text = generateCopyText();
-    
+
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -77,14 +85,14 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
   const calculateScore = () => {
     let total = 0;
     let count = 0;
-    
+
     questions.forEach(q => {
       if (q.type === "rating" && answers[q.id] !== null && answers[q.id] !== undefined) {
         total += Number(answers[q.id]);
         count++;
       }
     });
-    
+
     return count > 0 ? (total / count).toFixed(2) : "0";
   };
 
@@ -172,7 +180,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
               )}
             </button>
           </div>
-          
+
           <Link
             to="/logs"
             className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl
