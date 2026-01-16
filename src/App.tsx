@@ -40,7 +40,7 @@ const App = () => (
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
                   <Route path="/auth" element={<Auth />} />
-                  <Route path="/p/:shareToken" element={<PublicRecords />} />
+                  <Route path="/p/:userId" element={<PublicRecords />} />
                   <Route
                     path="/"
                     element={
