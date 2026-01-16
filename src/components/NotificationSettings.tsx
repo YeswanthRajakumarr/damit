@@ -5,7 +5,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { TimePicker } from "@/components/TimePicker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
@@ -152,12 +152,10 @@ export function NotificationSettings() {
               </Label>
             </div>
             <div className="flex items-center gap-3">
-              <Input
+              <TimePicker
                 id="reminder-time"
-                type="time"
                 value={timeValue}
-                onChange={(e) => handleTimeChange(e.target.value)}
-                className="max-w-[200px]"
+                onChange={handleTimeChange}
               />
               <p className="text-sm text-muted-foreground">
                 Daily reminder will be sent at this time
