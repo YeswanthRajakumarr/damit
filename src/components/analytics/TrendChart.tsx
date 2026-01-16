@@ -55,14 +55,23 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
         return [...logs]
             .sort((a, b) => new Date(a.log_date).getTime() - new Date(b.log_date).getTime())
             .slice(-rangeValue)
-            .map(log => ({
-                date: format(parseISO(log.log_date), "MMM d"),
-                energy: log.energy_level ?? 0,
-                stress: log.stress_fatigue ?? 0,
-                diet: log.diet ?? 0,
-                sleep: (log.sleep_last_night ?? 0) / 12, // Scale sleep (max 12h) to 0-1 range
-                sleepRaw: log.sleep_last_night ?? 0,
-            }));
+            .map(log => {
+                const sleepValue = log.sleep_last_night ?? 0;
+                let sleepLabel = "N/A";
+                if (sleepValue === 1) sleepLabel = "Perfect";
+                else if (sleepValue === 0.5) sleepLabel = "Good";
+                else if (sleepValue === 0) sleepLabel = "Bad";
+                else if (sleepValue === -1) sleepLabel = "Too bad";
+
+                return {
+                    date: format(parseISO(log.log_date), "MMM d"),
+                    energy: log.energy_level ?? 0,
+                    stress: log.stress_fatigue ?? 0,
+                    diet: log.diet ?? 0,
+                    sleep: sleepValue,
+                    sleepLabel,
+                };
+            });
     }, [logs, rangeValue]);
 
     const toggleMetric = (e: any) => {
@@ -105,7 +114,7 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
 
             <div className="h-[250px] sm:h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
+                    <LineChart data={chartData} margin={{ top: 5, right: 10, left: 5, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
                         <XAxis
                             dataKey="date"
@@ -128,7 +137,7 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
                                 if (value === 1) return "Excellent";
                                 return value;
                             }}
-                            width={50}
+                            width={70}
                         />
                         <Tooltip
                             contentStyle={{
@@ -139,7 +148,7 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
                             }}
                             itemStyle={{ fontSize: "10px" }}
                             formatter={(value: any, name: string, props: any) => {
-                                if (name === "Sleep") return [`${props.payload.sleepRaw}h`, name];
+                                if (name === "Sleep") return [props.payload.sleepLabel, name];
                                 return [value, name];
                             }}
                         />
