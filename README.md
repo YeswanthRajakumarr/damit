@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+# DAMit!
 
-## Project info
+DAMit! is a beautiful, interactive daily activity and habit tracker designed to help you monitor your well-being, habits, and daily progress.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![DAMit! Screenshot](public/og-image.png)
 
-## How can I edit this code?
+## 🚀 Features
 
-There are several ways of editing your application.
+- **Daily Check-ins**: Track your diet, energy levels, stress, sleep quality, and more with a simple, engaging interface.
+- **Interactive UI**: Smooth animations and transitions powered by Framer Motion.
+- **Progress Tracking**: Visual indicators for your daily completion status.
+- **History Logs**: View and analyze your past entries.
+- **Authentication**: Secure user accounts using Supabase.
+- **PWA Support**: Installable on mobile and desktop devices.
+- **Responsive Design**: optimized for both mobile and desktop experiences.
+- **Dark/Light Mode**: Fully themable interface.
 
-**Use Lovable**
+## 🛠️ Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+This project is built with a modern frontend stack:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Framework**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix UI)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **State Management**: [TanStack Query](https://tanstack.com/query/latest)
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Backend/Auth**: [Supabase](https://supabase.com/)
+- **Testing**: [Vitest](https://vitest.dev/) (Unit) & [Playwright](https://playwright.dev/) (E2E)
 
-**Use your preferred IDE**
+## 📦 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js (v18 or higher recommended)
+- npm, yarn, or pnpm
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/YeswanthRajakumarr/damit.git
+    cd damit
+    ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2.  Install dependencies:
+    ```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+    ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+3.  Set up environment variables:
+    Create a `.env` file in the root directory and add your Supabase credentials:
+    ```env
+    VITE_SUPABASE_URL=your_supabase_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+4.  Start the development server:
+    ```bash
+    npm run dev
+    ```
 
-**Edit a file directly in GitHub**
+## 📜 Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `npm run dev`: Start the development server.
+- `npm run build`: Build the app for production.
+- `npm run preview`: Preview the production build locally.
+- `npm run lint`: Lint the codebase using ESLint.
+- `npm run test`: Run unit tests with Vitest.
+- `npm run test:e2e`: Run end-to-end tests with Playwright.
 
-**Use GitHub Codespaces**
+## 🤝 Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## What technologies are used for this project?
+## 📄 License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is licensed under the MIT License.
