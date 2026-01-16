@@ -25,6 +25,7 @@ export const TextInput = ({ value, onChange, placeholder, type = "text" }: TextI
                      focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                      resize-none min-h-[120px] transition-all duration-200"
           rows={4}
+          data-testid="text-input"
         />
       ) : (
         <input
@@ -37,6 +38,7 @@ export const TextInput = ({ value, onChange, placeholder, type = "text" }: TextI
                      text-foreground placeholder:text-muted-foreground text-2xl font-semibold text-center
                      focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                      transition-all duration-200"
+          data-testid="number-input"
         />
       )}
     </motion.div>

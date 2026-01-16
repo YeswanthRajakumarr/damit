@@ -1,3 +1,18 @@
+import {
+  Utensils,
+  Zap,
+  Brain,
+  Dumbbell,
+  GlassWater,
+  Moon,
+  Cookie,
+  Sandwich,
+  Footprints,
+  Heart,
+  Star,
+  LucideIcon
+} from "lucide-react";
+
 export type QuestionType = 'rating' | 'text' | 'number';
 
 export interface RatingOption {
@@ -11,6 +26,7 @@ export interface Question {
   type: QuestionType;
   options?: RatingOption[];
   placeholder?: string;
+  icon?: LucideIcon;
 }
 
 export const questions: Question[] = [
@@ -18,6 +34,7 @@ export const questions: Question[] = [
     id: 1,
     question: "Diet",
     type: "rating",
+    icon: Utensils,
     options: [
       { value: 1, label: "Perfect" },
       { value: 0.5, label: "Good" },
@@ -29,6 +46,7 @@ export const questions: Question[] = [
     id: 2,
     question: "Energy level",
     type: "rating",
+    icon: Zap,
     options: [
       { value: 1, label: "Very High" },
       { value: 0.5, label: "High" },
@@ -40,6 +58,7 @@ export const questions: Question[] = [
     id: 3,
     question: "Stress & Fatigue",
     type: "rating",
+    icon: Brain,
     options: [
       { value: 0, label: "Very High" },
       { value: 0.25, label: "High" },
@@ -51,6 +70,7 @@ export const questions: Question[] = [
     id: 4,
     question: "Workout",
     type: "rating",
+    icon: Dumbbell,
     options: [
       { value: 1, label: "Perfect" },
       { value: 0.5, label: "Good" },
@@ -62,6 +82,7 @@ export const questions: Question[] = [
     id: 5,
     question: "Water intake",
     type: "rating",
+    icon: GlassWater,
     options: [
       { value: 1, label: "Perfect" },
       { value: 0.5, label: "Good" },
@@ -73,6 +94,7 @@ export const questions: Question[] = [
     id: 6,
     question: "Sleep last night",
     type: "rating",
+    icon: Moon,
     options: [
       { value: 1, label: "Perfect" },
       { value: 0.5, label: "Good" },
@@ -84,6 +106,7 @@ export const questions: Question[] = [
     id: 7,
     question: "Cravings",
     type: "rating",
+    icon: Cookie,
     options: [
       { value: 0, label: "Very High" },
       { value: 0.25, label: "High" },
@@ -95,6 +118,7 @@ export const questions: Question[] = [
     id: 8,
     question: "Hunger level",
     type: "rating",
+    icon: Sandwich,
     options: [
       { value: 0, label: "Very High" },
       { value: 0.25, label: "High" },
@@ -106,6 +130,7 @@ export const questions: Question[] = [
     id: 9,
     question: "Did you reach your 10K goal?",
     type: "rating",
+    icon: Footprints,
     options: [
       { value: 1, label: "Yes" },
       { value: 0, label: "No" },
@@ -115,18 +140,21 @@ export const questions: Question[] = [
     id: 10,
     question: "One good thing about today",
     type: "text",
+    icon: Heart,
     placeholder: "Share something positive...",
   },
   {
     id: 11,
     question: "Total step count?",
     type: "number",
+    icon: Footprints,
     placeholder: "Enter your steps",
   },
   {
     id: 12,
     question: "Proud of yourself?",
     type: "rating",
+    icon: Star,
     options: [
       { value: 1, label: "Yes" },
       { value: 0, label: "No" },

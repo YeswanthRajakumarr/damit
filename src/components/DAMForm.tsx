@@ -81,6 +81,7 @@ export const DAMForm = () => {
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
                          bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all 
                          shadow-soft animate-glow border border-primary/20"
+              data-testid="nav-logs"
             >
               <Table2 className="w-4 h-4" />
               <span className="hidden sm:inline">Past DAMs</span>

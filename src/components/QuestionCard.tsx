@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { Question } from "@/data/questions";
+import { Question, questions } from "@/data/questions";
 import { RatingSelector } from "./RatingSelector";
 import { TextInput } from "./TextInput";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -75,10 +75,11 @@ export const QuestionCard = ({
       >
         <div className="bg-card rounded-2xl p-6 shadow-card gradient-card">
           <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium mb-3">
+            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium mb-3" data-testid="question-number">
               Question {question.id}
             </span>
-            <h2 className="text-2xl font-bold text-foreground">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              {question.icon && <question.icon className="w-8 h-8 text-primary" />}
               {question.question}
             </h2>
             {question.type === "rating" && (
@@ -123,6 +124,7 @@ export const QuestionCard = ({
                   ? "opacity-30 cursor-not-allowed"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
+              data-testid="nav-back"
             >
               <ChevronLeft className="w-4 h-4" />
               Back
@@ -130,7 +132,7 @@ export const QuestionCard = ({
 
             <div className="min-w-0 flex justify-center">
               <div className="flex gap-0.5 sm:gap-1 max-w-full overflow-hidden">
-                {[...Array(11)].map((_, i) => (
+                {[...Array(questions.length)].map((_, i) => (
                   <div
                     key={i}
                     className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all ${i === question.id - 1 ? "bg-primary w-3 sm:w-4" : "bg-secondary"
@@ -147,6 +149,7 @@ export const QuestionCard = ({
                   ? "gradient-primary text-primary-foreground shadow-soft"
                   : "text-primary hover:bg-secondary"
                 }`}
+              data-testid="nav-next"
             >
               {isLast ? "Submit" : "Next"}
               <ChevronRight className="w-4 h-4" />

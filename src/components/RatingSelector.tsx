@@ -35,6 +35,7 @@ export const RatingSelector = ({ options, value, onChange }: RatingSelectorProps
               ${getOptionStyle(option.value, isSelected)}
               ${isSelected ? "shadow-card" : "shadow-soft hover:shadow-card"}
             `}
+            data-testid={`rating-${option.value}`}
           >
             <div className="flex items-center justify-between">
               <span className="font-medium">{option.label}</span>

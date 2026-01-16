@@ -72,21 +72,21 @@ export default function Auth() {
             <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input type="text" placeholder="Display Name" value={displayName} onChange={e => setDisplayName(e.target.value)} maxLength={100} className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary text-foreground 
                              placeholder:text-muted-foreground border-0 focus:ring-2 
-                             focus:ring-primary/50 outline-none transition-all" />
+                             focus:ring-primary/50 outline-none transition-all" data-testid="display-name-input" />
           </div>}
 
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary text-foreground 
                            placeholder:text-muted-foreground border-0 focus:ring-2 
-                           focus:ring-primary/50 outline-none transition-all" />
+                           focus:ring-primary/50 outline-none transition-all" data-testid="email-input" />
           </div>
 
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} className="w-full pl-10 pr-12 py-3 rounded-xl bg-secondary text-foreground 
                            placeholder:text-muted-foreground border-0 focus:ring-2 
-                           focus:ring-primary/50 outline-none transition-all" />
+                           focus:ring-primary/50 outline-none transition-all" data-testid="password-input" />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -98,7 +98,7 @@ export default function Auth() {
 
           <button type="submit" disabled={loading} className="w-full py-3 rounded-xl gradient-primary text-primary-foreground 
                          font-medium shadow-soft hover:shadow-card transition-all
-                         disabled:opacity-50 disabled:cursor-not-allowed">
+                         disabled:opacity-50 disabled:cursor-not-allowed" data-testid="auth-submit">
             {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : isLogin ? "Sign In" : "Sign Up"}
           </button>
         </form>

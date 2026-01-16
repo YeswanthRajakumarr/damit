@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+playwright-report/*
+*.webm
+*.mp4
+test-results/
+coverage/
