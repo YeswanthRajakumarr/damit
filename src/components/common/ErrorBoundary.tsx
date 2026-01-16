@@ -41,9 +41,11 @@ export class ErrorBoundary extends React.Component<Props, State> {
                         <p className="text-muted-foreground mb-6">
                             We encountered an unexpected error. Please try refreshing the page.
                         </p>
-                        {process.env.NODE_ENV === "development" && this.state.error && (
+                        {import.meta.env.DEV && this.state.error && (
                             <div className="mb-6 p-4 bg-muted/50 rounded-lg text-left overflow-auto max-h-40 text-xs font-mono">
-                                {this.state.error.toString()}
+                                {this.state.error instanceof Error
+                                    ? this.state.error.message
+                                    : String(this.state.error)}
                             </div>
                         )}
                         <button

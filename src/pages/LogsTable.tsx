@@ -1,17 +1,58 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useDailyLogs, DailyLog } from "@/hooks/useDailyLogs";
-import { ArrowLeft } from "lucide-react";
+import { useDailyLogs, DailyLog, useDeleteLog } from "@/hooks/useDailyLogs";
+import { ArrowLeft, Trash2, Calendar, TrendingUp, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
+import { format, parseISO } from "date-fns";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
 
-export default function LogsTable() {
+const LogsTable = () => {
   const { data: logs, isLoading, error } = useDailyLogs();
   const [selectedLog, setSelectedLog] = useState<DailyLog | null>(null);
+  const deleteLog = useDeleteLog();
+
+  const handleDelete = async (id: string, date: string) => {
+    if (window.confirm(`Are you sure you want to delete the log for ${format(parseISO(date), "MMMM d, yyyy")}?`)) {
+      try {
+        await deleteLog.mutateAsync(id);
+        toast.success("Log deleted successfully");
+      } catch (error) {
+        toast.error("Failed to delete log");
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen gradient-warm px-6 py-8">
+        <div className="max-w-4xl mx-auto">
+          <Skeleton className="h-8 w-48 mb-6" />
+          <div className="bg-card/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-soft overflow-hidden">
+            <div className="p-4 border-b border-border/50 flex gap-4">
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="p-4 border-b border-border/50 flex gap-4">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-4 w-1/4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen gradient-warm">
@@ -81,3 +122,5 @@ export default function LogsTable() {
     </div>
   );
 }
+
+export default LogsTable;

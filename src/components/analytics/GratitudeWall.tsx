@@ -2,10 +2,32 @@ import { motion } from "framer-motion";
 import { DailyLog } from "@/hooks/useDailyLogs";
 import { format, parseISO } from "date-fns";
 import { Heart } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GratitudeWallProps {
     logs: DailyLog[] | undefined;
 }
+
+export const GratitudeWallSkeleton = () => {
+    return (
+        <div className="space-y-4">
+            <Skeleton className="h-8 w-48" />
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                {[...Array(6)].map((_, i) => (
+                    <div key={i} className="break-inside-avoid">
+                        <div className="bg-card/60 backdrop-blur-sm p-6 rounded-2xl border border-border/50 shadow-soft">
+                            <Skeleton className="h-4 w-full mb-2" />
+                            <Skeleton className="h-4 w-2/3 mb-4" />
+                            <div className="flex items-center gap-3">
+                                <Skeleton className="h-4 w-20" />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 export const GratitudeWall = ({ logs }: GratitudeWallProps) => {
     const gratitudeLogs = logs?.filter(log => log.good_thing && log.good_thing.trim() !== "") || [];

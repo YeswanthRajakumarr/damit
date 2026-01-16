@@ -13,6 +13,7 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 // Lazy load pages
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const PublicRecords = lazy(() => import("./pages/PublicRecords"));
 const LogsTable = lazy(() => import("./pages/LogsTable"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -39,6 +40,7 @@ const App = () => (
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/p/:userId" element={<PublicRecords />} />
                   <Route
                     path="/"
                     element={

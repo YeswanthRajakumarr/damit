@@ -105,3 +105,21 @@ export const useSaveDailyLog = () => {
     },
   });
 };
+export const useDeleteLog = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("daily_logs")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+      return id;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["daily-logs"] });
+    },
+  });
+};

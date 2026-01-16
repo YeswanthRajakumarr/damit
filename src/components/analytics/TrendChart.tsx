@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
     LineChart,
     Line,
@@ -11,49 +11,124 @@ import {
 } from "recharts";
 import { DailyLog } from "@/hooks/useDailyLogs";
 import { format, parseISO } from "date-fns";
+import { cn } from "@/lib/utils";
+
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TrendChartProps {
     logs: DailyLog[] | undefined;
 }
 
+export const TrendChartSkeleton = () => {
+    return (
+        <div className="bg-card/50 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-border/50 shadow-soft mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <Skeleton className="h-7 w-48" />
+                <Skeleton className="h-9 w-48 rounded-xl" />
+            </div>
+            <div className="h-[250px] sm:h-[300px] w-full">
+                <Skeleton className="h-full w-full rounded-lg" />
+            </div>
+        </div>
+    );
+};
+
+type TimeRange = 'Day' | 'Week' | 'Month' | 'Overall';
+
 export const TrendChart = ({ logs }: TrendChartProps) => {
+    const [timeRange, setTimeRange] = useState<TimeRange>('Week');
+    const [hiddenMetrics, setHiddenMetrics] = useState<Set<string>>(new Set());
+
+    const rangeValue = useMemo(() => {
+        switch (timeRange) {
+            case 'Day': return 1;
+            case 'Week': return 7;
+            case 'Month': return 30;
+            case 'Overall': return 9999;
+            default: return 7;
+        }
+    }, [timeRange]);
+
     const chartData = useMemo(() => {
         if (!logs) return [];
 
         return [...logs]
             .sort((a, b) => new Date(a.log_date).getTime() - new Date(b.log_date).getTime())
-            .slice(-14) // Last 14 days
+            .slice(-rangeValue)
             .map(log => ({
                 date: format(parseISO(log.log_date), "MMM d"),
                 energy: log.energy_level ?? 0,
                 stress: log.stress_fatigue ?? 0,
                 diet: log.diet ?? 0,
+                sleep: (log.sleep_last_night ?? 0) / 12, // Scale sleep (max 12h) to 0-1 range
+                sleepRaw: log.sleep_last_night ?? 0,
             }));
-    }, [logs]);
+    }, [logs, rangeValue]);
+
+    const toggleMetric = (e: any) => {
+        const { dataKey } = e;
+        setHiddenMetrics((prev) => {
+            const next = new Set(prev);
+            if (next.has(dataKey)) {
+                next.delete(dataKey);
+            } else {
+                next.add(dataKey);
+            }
+            return next;
+        });
+    };
 
     if (chartData.length === 0) return null;
 
     return (
-        <div className="bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border/50 shadow-soft mb-8">
-            <h3 className="text-lg font-semibold mb-6 text-foreground">Performance Trends</h3>
-            <div className="h-[300px] w-full">
+        <div className="bg-card/50 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-border/50 shadow-soft mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h3 className="text-lg font-semibold text-foreground">Performance Trends</h3>
+
+                <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border/50 w-fit">
+                    {(['Day', 'Week', 'Month', 'Overall'] as TimeRange[]).map((range) => (
+                        <button
+                            key={range}
+                            onClick={() => setTimeRange(range)}
+                            className={cn(
+                                "px-3 py-1 text-xs font-bold rounded-lg transition-all",
+                                timeRange === range
+                                    ? "bg-primary text-white shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                            )}
+                        >
+                            {range}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="h-[250px] sm:h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                    <LineChart data={chartData} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
                         <XAxis
                             dataKey="date"
                             stroke="hsl(var(--muted-foreground))"
-                            fontSize={12}
+                            fontSize={10}
                             tickLine={false}
                             axisLine={false}
+                            minTickGap={15}
                         />
                         <YAxis
                             stroke="hsl(var(--muted-foreground))"
-                            fontSize={12}
+                            fontSize={10}
                             tickLine={false}
                             axisLine={false}
                             domain={[0, 1]}
                             ticks={[0, 0.5, 1]}
+                            tickFormatter={(value) => {
+                                if (value === 0) return "Poor";
+                                if (value === 0.5) return "Balanced";
+                                if (value === 1) return "Excellent";
+                                return value;
+                            }}
+                            width={50}
                         />
                         <Tooltip
                             contentStyle={{
@@ -62,39 +137,70 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
                                 borderRadius: "12px",
                                 color: "hsl(var(--foreground))",
                             }}
-                            itemStyle={{ fontSize: "12px" }}
+                            itemStyle={{ fontSize: "10px" }}
+                            formatter={(value: any, name: string, props: any) => {
+                                if (name === "Sleep") return [`${props.payload.sleepRaw}h`, name];
+                                return [value, name];
+                            }}
                         />
-                        <Legend verticalAlign="top" height={36} iconType="circle" />
+                        <Legend
+                            verticalAlign="top"
+                            height={40}
+                            iconType="circle"
+                            onClick={toggleMetric}
+                            wrapperStyle={{
+                                fontSize: '10px',
+                                paddingBottom: '10px',
+                                cursor: 'pointer'
+                            }}
+                        />
                         <Line
                             type="monotone"
                             dataKey="energy"
                             name="Energy"
                             stroke="#8b5cf6"
-                            strokeWidth={3}
-                            dot={{ r: 4, strokeWidth: 2, fill: "hsl(var(--background))" }}
-                            activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeWidth={2}
+                            strokeOpacity={hiddenMetrics.has("energy") ? 0.1 : 1}
+                            dot={hiddenMetrics.has("energy") ? false : { r: 3, strokeWidth: 2, fill: "hsl(var(--background))" }}
+                            activeDot={hiddenMetrics.has("energy") ? false : { r: 5, strokeWidth: 0 }}
                         />
                         <Line
                             type="monotone"
                             dataKey="stress"
                             name="Stress Free"
                             stroke="#f59e0b"
-                            strokeWidth={3}
-                            dot={{ r: 4, strokeWidth: 2, fill: "hsl(var(--background))" }}
-                            activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeWidth={2}
+                            strokeOpacity={hiddenMetrics.has("stress") ? 0.1 : 1}
+                            dot={hiddenMetrics.has("stress") ? false : { r: 3, strokeWidth: 2, fill: "hsl(var(--background))" }}
+                            activeDot={hiddenMetrics.has("stress") ? false : { r: 5, strokeWidth: 0 }}
                         />
                         <Line
                             type="monotone"
                             dataKey="diet"
                             name="Diet"
                             stroke="#06b6d4"
-                            strokeWidth={3}
-                            dot={{ r: 4, strokeWidth: 2, fill: "hsl(var(--background))" }}
-                            activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeWidth={2}
+                            strokeOpacity={hiddenMetrics.has("diet") ? 0.1 : 1}
+                            dot={hiddenMetrics.has("diet") ? false : { r: 3, strokeWidth: 2, fill: "hsl(var(--background))" }}
+                            activeDot={hiddenMetrics.has("diet") ? false : { r: 5, strokeWidth: 0 }}
+                        />
+                        <Line
+                            type="monotone"
+                            dataKey="sleep"
+                            name="Sleep"
+                            stroke="#22c55e"
+                            strokeWidth={2}
+                            strokeOpacity={hiddenMetrics.has("sleep") ? 0.1 : 1}
+                            dot={hiddenMetrics.has("sleep") ? false : { r: 3, strokeWidth: 2, fill: "hsl(var(--background))" }}
+                            activeDot={hiddenMetrics.has("sleep") ? false : { r: 5, strokeWidth: 0 }}
                         />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
+
+            <p className="text-[10px] text-muted-foreground text-center mt-2 italic">
+                Tip: Click legend items to toggle visibility
+            </p>
         </div>
     );
 };
