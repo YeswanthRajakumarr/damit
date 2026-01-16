@@ -3,12 +3,15 @@ import { motion } from "framer-motion";
 import { usePublicLogs, usePublicProfile } from "@/hooks/usePublicLogs";
 import { StatsDashboard, StatsDashboardSkeleton } from "@/components/logs/StatsDashboard";
 import { TrendChart, TrendChartSkeleton } from "@/components/analytics/TrendChart";
-import { Loader2, Share2 } from "lucide-react";
+import { Loader2, Share2, AlertCircle } from "lucide-react";
 
 export default function PublicRecords() {
-    const { userId } = useParams();
-    const { data: logs, isLoading: loadingLogs } = usePublicLogs(userId);
-    const { data: profile, isLoading: loadingProfile } = usePublicProfile(userId);
+    const { shareToken } = useParams();
+    const { data: logs, isLoading: loadingLogs, error: logsError } = usePublicLogs(shareToken);
+    const { data: profile, isLoading: loadingProfile, error: profileError } = usePublicProfile(shareToken);
+
+    const error = logsError || profileError;
+
     if (loadingLogs || loadingProfile) {
         return (
             <div className="min-h-screen gradient-warm flex items-center justify-center">
@@ -20,13 +23,26 @@ export default function PublicRecords() {
         );
     }
 
-    if (!profile) {
+    if (error || !profile) {
+        const errorMessage = error instanceof Error ? error.message : "Profile not found";
+        const isExpired = errorMessage.includes("expired");
+        const isDisabled = errorMessage.includes("disabled");
+
         return (
             <div className="min-h-screen gradient-warm flex items-center justify-center px-6 text-center">
                 <div className="max-w-md">
-                    <h2 className="text-2xl font-bold text-foreground mb-4">Profile Not Found</h2>
+                    <div className="w-20 h-20 rounded-3xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-6">
+                        <AlertCircle className="w-10 h-10" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
+                        {isExpired ? "Link Expired" : isDisabled ? "Sharing Disabled" : "Invalid Link"}
+                    </h2>
                     <p className="text-muted-foreground mb-8">
-                        The profile you are looking for might be private or does not exist.
+                        {isExpired
+                            ? "This share link has expired. Please ask the owner to generate a new link."
+                            : isDisabled
+                                ? "The owner has disabled public sharing for this profile."
+                                : "The link you're trying to access is invalid or no longer exists."}
                     </p>
                     <Link
                         to="/"
