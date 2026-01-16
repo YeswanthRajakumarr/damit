@@ -114,7 +114,7 @@ export default function PublicRecords() {
 
                 <div className="mt-12 p-8 rounded-3xl bg-card/30 border border-border/50 text-center backdrop-blur-sm">
                     <h3 className="text-lg font-semibold text-foreground mb-2">Want to track your own progress?</h3>
-                    <p className="text-muted-foreground mb-6">Join DAMit! to build daily accountability and visualize your health trends.</p>
+                    <p className="text-muted-foreground mb-6">Join DAMit! to build daily accountability and visualize your health trends, Share your dashboard with friends, coaches, or your community.</p>
                     <a
                         href="/auth"
                         className="inline-flex items-center justify-center px-6 py-3 rounded-xl gradient-primary text-white font-bold shadow-soft hover:shadow-card transition-all"
