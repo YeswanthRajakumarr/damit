@@ -1,9 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePublicLogs, usePublicProfile } from "@/hooks/usePublicLogs";
-import { StatsDashboard, StatsDashboardSkeleton } from "@/components/logs/StatsDashboard";
-import { TrendChart, TrendChartSkeleton } from "@/components/analytics/TrendChart";
-import { Loader2, Share2 } from "lucide-react";
+import { StatsDashboard } from "@/components/logs/StatsDashboard";
+import { TrendChart } from "@/components/analytics/TrendChart";
+import { PublicLogsTable } from "@/components/logs/PublicLogsTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Share2, BarChart3, Table2 } from "lucide-react";
 
 export default function PublicRecords() {
     const { userId } = useParams();
@@ -54,22 +56,61 @@ export default function PublicRecords() {
 
             {/* Main Content */}
             <main className="px-6 pb-12 max-w-5xl mx-auto">
-                <div className="space-y-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        <StatsDashboard logs={logs} />
-                    </motion.div>
+                <Tabs defaultValue="analytics" className="w-full">
+                    <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
+                        <TabsTrigger value="analytics" className="flex items-center gap-2">
+                            <BarChart3 className="w-4 h-4" />
+                            Analytics
+                        </TabsTrigger>
+                        <TabsTrigger value="logs" className="flex items-center gap-2">
+                            <Table2 className="w-4 h-4" />
+                            Logs
+                        </TabsTrigger>
+                    </TabsList>
 
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <TrendChart logs={logs} />
-                    </motion.div>
-                </div>
+                    <TabsContent value="analytics" className="space-y-4 mt-0">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
+                            <StatsDashboard logs={logs} />
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            <TrendChart logs={logs} />
+                        </motion.div>
+                    </TabsContent>
+
+                    <TabsContent value="logs" className="mt-0">
+                        <div className="space-y-4">
+                            {/* Legend */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex flex-wrap justify-center gap-4 text-sm"
+                            >
+                                <span className="flex items-center gap-1">
+                                    <span className="text-primary font-bold">✓</span> Excellent/Nill
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-success font-bold">½</span> Good/Low
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-warning font-bold">○</span> Fair/High
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-destructive font-bold">✗</span> Poor/Very High
+                                </span>
+                            </motion.div>
+
+                            <PublicLogsTable logs={logs} />
+                        </div>
+                    </TabsContent>
+                </Tabs>
 
                 <div className="mt-12 p-8 rounded-3xl bg-card/30 border border-border/50 text-center backdrop-blur-sm">
                     <h3 className="text-lg font-semibold text-foreground mb-2">Want to track your own progress?</h3>
