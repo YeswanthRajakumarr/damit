@@ -9,14 +9,59 @@ import { Loader2, Share2, BarChart3, Table2 } from "lucide-react";
 
 export default function PublicRecords() {
     const { userId } = useParams();
-    const { data: logs, isLoading: loadingLogs } = usePublicLogs(userId);
-    const { data: profile, isLoading: loadingProfile } = usePublicProfile(userId);
+    
+    // Validate userId format (UUID)
+    const isValidUUID = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+    
+    const { data: logs, isLoading: loadingLogs, error: logsError } = usePublicLogs(isValidUUID ? userId : undefined);
+    const { data: profile, isLoading: loadingProfile, error: profileError } = usePublicProfile(isValidUUID ? userId : undefined);
+    
+    // If userId is invalid format, show error immediately
+    if (userId && !isValidUUID) {
+        return (
+            <div className="min-h-screen gradient-warm flex items-center justify-center px-6 text-center">
+                <div className="max-w-md">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">Invalid Profile Link</h2>
+                    <p className="text-muted-foreground mb-8">
+                        The profile link you're trying to access is not valid.
+                    </p>
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary text-primary-foreground font-semibold hover:shadow-elevated transition-all"
+                    >
+                        Go Home
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     if (loadingLogs || loadingProfile) {
         return (
             <div className="min-h-screen gradient-warm flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
                     <p className="text-muted-foreground">Loading public records...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Handle errors
+    if (profileError || logsError) {
+        return (
+            <div className="min-h-screen gradient-warm flex items-center justify-center px-6 text-center">
+                <div className="max-w-md">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">Error Loading Profile</h2>
+                    <p className="text-muted-foreground mb-8">
+                        {profileError?.message || logsError?.message || "Unable to load this profile. Please try again later."}
+                    </p>
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary text-primary-foreground font-semibold hover:shadow-elevated transition-all"
+                    >
+                        Go Home
+                    </Link>
                 </div>
             </div>
         );
@@ -69,20 +114,28 @@ export default function PublicRecords() {
                     </TabsList>
 
                     <TabsContent value="analytics" className="space-y-4 mt-0">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                        >
-                            <StatsDashboard logs={logs} />
-                        </motion.div>
+                        {logs && logs.length > 0 ? (
+                            <>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    <StatsDashboard logs={logs} />
+                                </motion.div>
 
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            <TrendChart logs={logs} />
-                        </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.1 }}
+                                >
+                                    <TrendChart logs={logs} />
+                                </motion.div>
+                            </>
+                        ) : (
+                            <div className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 text-center">
+                                <p className="text-muted-foreground">No analytics data available yet.</p>
+                            </div>
+                        )}
                     </TabsContent>
 
                     <TabsContent value="logs" className="mt-0">
@@ -107,7 +160,13 @@ export default function PublicRecords() {
                                 </span>
                             </motion.div>
 
-                            <PublicLogsTable logs={logs} />
+                            {logs && logs.length > 0 ? (
+                                <PublicLogsTable logs={logs} />
+                            ) : (
+                                <div className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 text-center">
+                                    <p className="text-muted-foreground">No logs available yet.</p>
+                                </div>
+                            )}
                         </div>
                     </TabsContent>
                 </Tabs>
