@@ -67,7 +67,7 @@ export default function Profile() {
                         </div>
 
                         <p className="text-muted-foreground mb-8 max-w-md">
-                            Generate a public link to share your analytics and health trends with friends, coaches, or your community.
+                            Copy your permanent public link to share your analytics and health trends with friends, coaches, or your community.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -81,7 +81,7 @@ export default function Profile() {
 
                             <div className="flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground bg-secondary/30 rounded-xl border border-border/30">
                                 <Globe className="w-3 h-3" />
-                                <span>Anyone with this link can view your analytics</span>
+                                <span>This link is permanent and works anytime</span>
                             </div>
                         </div>
                     </div>
