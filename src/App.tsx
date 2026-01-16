@@ -6,9 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { setupNotificationHandlers } from "@/utils/notificationServiceWorker";
 
 // Lazy load pages
 const Index = lazy(() => import("./pages/Index"));
@@ -28,7 +29,22 @@ const LoadingSpinner = () => (
   </div>
 );
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    // Setup notification handlers when app loads
+    setupNotificationHandlers();
+
+    // Handle notification clicks from service worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "NOTIFICATION_CLICK") {
+          window.focus();
+        }
+      });
+    }
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark" storageKey="dam-ui-theme">
@@ -91,6 +107,7 @@ const App = () => (
       </ThemeProvider>
     </ErrorBoundary>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

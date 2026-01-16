@@ -4,6 +4,7 @@ import { ArrowLeft, Share2, Copy, Check, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
+import { NotificationSettings } from "@/components/NotificationSettings";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -91,9 +92,7 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border/50 shadow-soft">
-                    <p className="text-muted-foreground">Your profile settings and other privacy options will appear here.</p>
-                </div>
+                <NotificationSettings />
             </main>
         </div>
     );
