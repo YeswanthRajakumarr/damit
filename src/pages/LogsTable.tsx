@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
-import { StatsDashboard } from "@/components/logs/StatsDashboard";
+
 import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
 
@@ -39,8 +39,7 @@ export default function LogsTable() {
           </div>
         </div>
 
-        {/* Weekly Summary */}
-        <StatsDashboard logs={logs} />
+
       </motion.header>
 
       {/* Main Content */}

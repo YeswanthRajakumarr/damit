@@ -79,7 +79,30 @@ export const QuestionCard = ({
               Question {question.id}
             </span>
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-              {question.icon && <question.icon className="w-8 h-8 text-primary" />}
+              {question.icon && (
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                    rotate: 0,
+                    y: [0, -4, 0]
+                  }}
+                  transition={{
+                    scale: { type: "spring", stiffness: 300, damping: 15 },
+                    opacity: { duration: 0.2 },
+                    y: {
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <question.icon className="w-8 h-8 text-primary" />
+                </motion.div>
+              )}
               {question.question}
             </h2>
             {question.type === "rating" && (

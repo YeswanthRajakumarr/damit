@@ -15,6 +15,9 @@ const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LogsTable = lazy(() => import("./pages/LogsTable"));
 const Auth = lazy(() => import("./pages/Auth"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const Gratitude = lazy(() => import("./pages/Gratitude"));
 
 const queryClient = new QueryClient();
 
@@ -27,7 +30,7 @@ const LoadingSpinner = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="dam-ui-theme">
+      <ThemeProvider defaultTheme="dark" storageKey="dam-ui-theme">
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
@@ -49,6 +52,30 @@ const App = () => (
                     element={
                       <ProtectedRoute>
                         <LogsTable />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/analytics"
+                    element={
+                      <ProtectedRoute>
+                        <Analytics />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/gratitude"
+                    element={
+                      <ProtectedRoute>
+                        <Gratitude />
                       </ProtectedRoute>
                     }
                   />

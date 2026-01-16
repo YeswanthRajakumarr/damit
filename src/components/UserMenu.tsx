@@ -1,4 +1,4 @@
-import { LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon, TrendingUp, Heart } from "lucide-react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
@@ -9,6 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const UserMenu = () => {
@@ -41,12 +42,27 @@ export const UserMenu = () => {
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none text-foreground">Profile</p>
+                        <Link to="/profile" className="text-sm font-medium leading-none text-foreground hover:underline">
+                            Profile
+                        </Link>
                         <p className="text-xs leading-none text-muted-foreground truncate">
                             {user.email}
                         </p>
                     </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <Link to="/analytics" className="cursor-pointer">
+                        <TrendingUp className="mr-2 h-4 w-4" />
+                        <span>Analytics</span>
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link to="/gratitude" className="cursor-pointer">
+                        <Heart className="mr-2 h-4 w-4 text-destructive" />
+                        <span>Gratitude Wall</span>
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onClick={handleLogout}
