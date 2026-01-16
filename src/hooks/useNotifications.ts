@@ -190,7 +190,6 @@ async function showDailyReminderNotification() {
     badge: "/favicon.png",
     tag: "daily-reminder",
     requireInteraction: false,
-    vibrate: [200, 100, 200],
     data: {
       url: "/",
     },
