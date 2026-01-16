@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { GratitudeWall, GratitudeWallSkeleton } from "@/components/analytics/GratitudeWall";
 
 export default function Gratitude() {
-    const { data: logs, isLoading } = useDailyLogs();
+    const { data, isLoading } = useDailyLogs();
+    const logs = data?.logs;
 
     return (
         <div className="min-h-screen gradient-warm px-6 pt-8 pb-12 safe-bottom">

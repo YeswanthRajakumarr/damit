@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { Loader2, ArrowUp, ArrowDown, Copy, Check } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, Copy, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { DailyLog } from "@/hooks/useDailyLogs";
 import { questions, formatAnswerForCopy, Question } from "@/data/questions";
@@ -16,6 +16,10 @@ import {
 
 interface LogsDataGridProps {
     logs: DailyLog[] | undefined;
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+    onPageChange: (page: number) => void;
     isLoading: boolean;
     error: Error | null;
     onLogClick: (log: DailyLog) => void;
@@ -39,12 +43,13 @@ const getValueColor = (value: number | null): string => {
     return "text-destructive";
 };
 
-export function LogsDataGrid({ logs, isLoading, error, onLogClick }: LogsDataGridProps) {
+export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageChange, isLoading, error, onLogClick }: LogsDataGridProps) {
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
     const [copiedId, setCopiedId] = useState<string | null>(null);
 
     const sortedLogs = useMemo(() => {
         if (!logs) return [];
+        // Server-side ordering is usually enough, but we keep this for consistency if needed
         return [...logs].sort((a, b) => {
             const dateA = new Date(a.log_date).getTime();
             const dateB = new Date(b.log_date).getTime();
@@ -108,149 +113,192 @@ export function LogsDataGrid({ logs, isLoading, error, onLogClick }: LogsDataGri
         }
     };
 
+    const totalPages = Math.ceil(totalCount / pageSize);
+
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden"
-        >
-            {isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div>
-            ) : error ? (
-                <div className="text-center py-12 text-destructive">
-                    Error loading logs
-                </div>
-            ) : !logs || logs.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                    No logs yet. Complete your first DAMit!
-                </div>
-            ) : (
-                <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-border/50">
-                                <TableHead
-                                    className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[100px] cursor-pointer hover:bg-muted/50 transition-colors"
-                                    onClick={toggleSort}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        Date
-                                        {sortOrder === "desc" ? (
-                                            <ArrowDown className="w-4 h-4" />
-                                        ) : (
-                                            <ArrowUp className="w-4 h-4" />
-                                        )}
-                                    </div>
-                                </TableHead>
-                                <TableHead className="text-center min-w-[60px]">Diet</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Energy</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Stress</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Workout</TableHead>
-                                <TableHead className="text-center min-w-[60px]">Water</TableHead>
-                                <TableHead className="text-center min-w-[60px]">Sleep</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Cravings</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Hunger</TableHead>
-                                <TableHead className="text-center min-w-[70px]">10K Goal</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Steps</TableHead>
-                                <TableHead className="min-w-[120px]">Good Thing</TableHead>
-                                <TableHead className="text-center min-w-[70px]">Proud</TableHead>
-                                <TableHead className="text-center min-w-[60px]">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {sortedLogs.map((log) => (
-                                <TableRow
-                                    key={log.id}
-                                    className="border-border/30 cursor-pointer hover:bg-muted/30 transition-colors group"
-                                    onClick={() => onLogClick(log)}
-                                >
-                                    <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 font-medium py-2">
-                                        {format(new Date(log.log_date), "MMM d")}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.diet)}`}>
-                                        {formatValue(log.diet)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.energy_level)}`}>
-                                        {formatValue(log.energy_level)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.stress_fatigue)}`}>
-                                        {formatValue(log.stress_fatigue)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.workout)}`}>
-                                        {formatValue(log.workout)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.water_intake)}`}>
-                                        {formatValue(log.water_intake)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.sleep_last_night)}`}>
-                                        {formatValue(log.sleep_last_night)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.cravings)}`}>
-                                        {formatValue(log.cravings)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.hunger_level)}`}>
-                                        {formatValue(log.hunger_level)}
-                                    </TableCell>
-                                    <TableCell className={`text-center font-bold py-2 ${getValueColor(log.step_goal_reached)}`}>
-                                        {formatValue(log.step_goal_reached)}
-                                    </TableCell>
-                                    <TableCell className="text-center py-2">
-                                        {log.step_count?.toLocaleString() || "-"}
-                                    </TableCell>
-                                    <TableCell className="max-w-[150px] truncate py-2" title={log.good_thing || ""}>
-                                        {log.good_thing || "-"}
-                                    </TableCell>
-                                    <TableCell className="text-center py-2">
-                                        {(() => {
-                                            const val = log.proud_of_yourself;
-                                            if (val === null || val === "") return "-";
-
-                                            const strVal = String(val).toLowerCase();
-                                            const isYes = ["1", "yes", "yeah"].includes(strVal);
-                                            const isNo = ["0", "no"].includes(strVal);
-
-                                            if (isYes) {
-                                                return (
-                                                    <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-success/10 text-success text-[10px] font-bold border border-success/20 uppercase tracking-wider">
-                                                        Yes
-                                                    </span>
-                                                );
-                                            }
-                                            if (isNo) {
-                                                return (
-                                                    <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-destructive/10 text-destructive text-[10px] font-bold border border-destructive/20 uppercase tracking-wider">
-                                                        No
-                                                    </span>
-                                                );
-                                            }
-                                            return <span className="text-muted-foreground">{val}</span>;
-                                        })()}
-                                    </TableCell>
-                                    <TableCell className="text-center py-2">
-                                        <button
-                                            onClick={(e) => handleCopyRow(e, log)}
-                                            className={`p-1.5 rounded-lg transition-all ${copiedId === log.id
-                                                ? "bg-success/20 text-success"
-                                                : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                                                }`}
-                                            title="Copy this log"
-                                        >
-                                            {copiedId === log.id ? (
-                                                <Check className="w-4 h-4" />
+        <div className="space-y-4">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-border/50"
+            >
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-12 text-destructive">
+                        Error loading logs
+                    </div>
+                ) : !logs || logs.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                        No logs found.
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="border-border/50">
+                                    <TableHead
+                                        className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[100px] cursor-pointer hover:bg-muted/50 transition-colors"
+                                        onClick={toggleSort}
+                                    >
+                                        <div className="flex items-center gap-1">
+                                            Date
+                                            {sortOrder === "desc" ? (
+                                                <ArrowDown className="w-4 h-4" />
                                             ) : (
-                                                <Copy className="w-4 h-4" />
+                                                <ArrowUp className="w-4 h-4" />
                                             )}
-                                        </button>
-                                    </TableCell>
+                                        </div>
+                                    </TableHead>
+                                    <TableHead className="text-center min-w-[60px]">Diet</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Energy</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Stress</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Workout</TableHead>
+                                    <TableHead className="text-center min-w-[60px]">Water</TableHead>
+                                    <TableHead className="text-center min-w-[60px]">Sleep</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Cravings</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Hunger</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">10K Goal</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Steps</TableHead>
+                                    <TableHead className="min-w-[120px]">Good Thing</TableHead>
+                                    <TableHead className="text-center min-w-[70px]">Proud</TableHead>
+                                    <TableHead className="text-center min-w-[60px]">Action</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {sortedLogs.map((log) => (
+                                    <TableRow
+                                        key={log.id}
+                                        className="border-border/30 cursor-pointer hover:bg-muted/30 transition-colors group"
+                                        onClick={() => onLogClick(log)}
+                                    >
+                                        <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-10 font-medium py-2">
+                                            {format(new Date(log.log_date), "MMM d")}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.diet)}`}>
+                                            {formatValue(log.diet)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.energy_level)}`}>
+                                            {formatValue(log.energy_level)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.stress_fatigue)}`}>
+                                            {formatValue(log.stress_fatigue)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.workout)}`}>
+                                            {formatValue(log.workout)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.water_intake)}`}>
+                                            {formatValue(log.water_intake)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.sleep_last_night)}`}>
+                                            {formatValue(log.sleep_last_night)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.cravings)}`}>
+                                            {formatValue(log.cravings)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.hunger_level)}`}>
+                                            {formatValue(log.hunger_level)}
+                                        </TableCell>
+                                        <TableCell className={`text-center font-bold py-2 ${getValueColor(log.step_goal_reached)}`}>
+                                            {formatValue(log.step_goal_reached)}
+                                        </TableCell>
+                                        <TableCell className="text-center py-2">
+                                            {log.step_count?.toLocaleString() || "-"}
+                                        </TableCell>
+                                        <TableCell className="max-w-[150px] truncate py-2" title={log.good_thing || ""}>
+                                            {log.good_thing || "-"}
+                                        </TableCell>
+                                        <TableCell className="text-center py-2">
+                                            {(() => {
+                                                const val = log.proud_of_yourself;
+                                                if (val === null || val === "") return "-";
+
+                                                const strVal = String(val).toLowerCase();
+                                                const isYes = ["1", "yes", "yeah"].includes(strVal);
+                                                const isNo = ["0", "no"].includes(strVal);
+
+                                                if (isYes) {
+                                                    return (
+                                                        <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-success/10 text-success text-[10px] font-bold border border-success/20 uppercase tracking-wider">
+                                                            Yes
+                                                        </span>
+                                                    );
+                                                }
+                                                if (isNo) {
+                                                    return (
+                                                        <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-destructive/10 text-destructive text-[10px] font-bold border border-destructive/20 uppercase tracking-wider">
+                                                            No
+                                                        </span>
+                                                    );
+                                                }
+                                                return <span className="text-muted-foreground">{val}</span>;
+                                            })()}
+                                        </TableCell>
+                                        <TableCell className="text-center py-2">
+                                            <button
+                                                onClick={(e) => handleCopyRow(e, log)}
+                                                className={`p-1.5 rounded-lg transition-all ${copiedId === log.id
+                                                    ? "bg-success/20 text-success"
+                                                    : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                                    }`}
+                                                title="Copy this log"
+                                            >
+                                                {copiedId === log.id ? (
+                                                    <Check className="w-4 h-4" />
+                                                ) : (
+                                                    <Copy className="w-4 h-4" />
+                                                )}
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
+            </motion.div>
+
+            {/* Pagination Controls */}
+            {totalCount > pageSize && (
+                <div className="flex items-center justify-between px-2">
+                    <p className="text-sm text-muted-foreground">
+                        Showing <span className="font-medium">{currentPage * pageSize + 1}</span> to <span className="font-medium">{Math.min((currentPage + 1) * pageSize, totalCount)}</span> of <span className="font-medium">{totalCount}</span> results
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => onPageChange(currentPage - 1)}
+                            disabled={currentPage === 0 || isLoading}
+                            className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-center gap-1">
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => onPageChange(i)}
+                                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === i
+                                        ? "bg-primary text-white shadow-sm"
+                                        : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                        }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            )).slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 3))}
+                        </div>
+                        <button
+                            onClick={() => onPageChange(currentPage + 1)}
+                            disabled={currentPage >= totalPages - 1 || isLoading}
+                            className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
                 </div>
             )}
-        </motion.div>
+        </div>
     );
 }

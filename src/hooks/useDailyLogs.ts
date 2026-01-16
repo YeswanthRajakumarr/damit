@@ -21,17 +21,28 @@ export interface DailyLog {
   updated_at: string;
 }
 
-export const useDailyLogs = () => {
+export const useDailyLogs = (page?: number, pageSize?: number) => {
   return useQuery({
-    queryKey: ["daily-logs"],
+    queryKey: ["daily-logs", page, pageSize],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("daily_logs")
-        .select("*")
+        .select("*", { count: "exact" })
         .order("log_date", { ascending: false });
 
+      if (page !== undefined && pageSize !== undefined) {
+        const from = page * pageSize;
+        const to = from + pageSize - 1;
+        query = query.range(from, to);
+      }
+
+      const { data, error, count } = await query;
+
       if (error) throw error;
-      return data as DailyLog[];
+      return {
+        logs: data as DailyLog[],
+        totalCount: count || 0,
+      };
     },
   });
 };

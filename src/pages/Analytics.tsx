@@ -7,7 +7,8 @@ import { TrendingUp, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Analytics = () => {
-    const { data: logs, isLoading: loadingLogs } = useDailyLogs();
+    const { data, isLoading: loadingLogs } = useDailyLogs();
+    const logs = data?.logs;
     const stats = useLogStats(logs);
 
     return (

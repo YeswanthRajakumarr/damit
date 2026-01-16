@@ -13,9 +13,15 @@ import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
 
 const LogsTable = () => {
-  const { data: logs, isLoading, error } = useDailyLogs();
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 15;
+  const { data, isLoading, error } = useDailyLogs(currentPage, pageSize);
+  const logs = data?.logs;
+  const totalCount = data?.totalCount || 0;
   const [selectedLog, setSelectedLog] = useState<DailyLog | null>(null);
   const deleteLog = useDeleteLog();
+
+
 
   const handleDelete = async (id: string, date: string) => {
     if (window.confirm(`Are you sure you want to delete the log for ${format(parseISO(date), "MMMM d, yyyy")}?`)) {
@@ -108,6 +114,10 @@ const LogsTable = () => {
 
         <LogsDataGrid
           logs={logs}
+          totalCount={totalCount}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
           isLoading={isLoading}
           error={error as Error | null}
           onLogClick={setSelectedLog}
