@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useDailyLogs, DailyLog, useDeleteLog } from "@/hooks/useDailyLogs";
-import { ArrowLeft, Trash2, Calendar, TrendingUp, Filter } from "lucide-react";
+import { ArrowLeft, Trash2, Calendar, TrendingUp, Filter, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
@@ -83,9 +83,17 @@ const LogsTable = () => {
           </Link>
           <div className="flex items-center gap-2">
             <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-            <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
+            <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              to="/analytics"
+              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+              aria-label="Analytics"
+              title="Analytics"
+            >
+              <BarChart3 className="w-5 h-5 text-foreground" />
+            </Link>
             <ThemeToggle />
             <UserMenu />
           </div>

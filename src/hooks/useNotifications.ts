@@ -9,6 +9,9 @@ interface NotificationSettings {
 const STORAGE_KEY = "damit-notification-settings";
 const DEFAULT_TIME = "20:00"; // 8 PM default
 
+// Module-level variable to track current timeout (not persisted across page reloads)
+let currentNotificationTimeout: ReturnType<typeof setTimeout> | null = null;
+
 export function useNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof window !== "undefined" ? Notification.permission : "default"
@@ -89,6 +92,36 @@ export function useNotifications() {
     toast.info("Daily reminders disabled");
   }, [updateSettings]);
 
+  // Sync permission state with browser permission (detect external changes)
+  useEffect(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      return;
+    }
+
+    // Check permission on window focus (user might have changed it in browser settings)
+    const handleFocus = () => {
+      const currentPermission = Notification.permission;
+      if (currentPermission !== permission) {
+        setPermission(currentPermission);
+      }
+    };
+
+    // Also check periodically (every 30 seconds) in case permission changes while tab is active
+    const intervalId = setInterval(() => {
+      const currentPermission = Notification.permission;
+      if (currentPermission !== permission) {
+        setPermission(currentPermission);
+      }
+    }, 30000);
+
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(intervalId);
+    };
+  }, [permission]);
+
   // Schedule daily notification
   useEffect(() => {
     if (settings.enabled && permission === "granted") {
@@ -127,15 +160,12 @@ function scheduleDailyNotification(time: string) {
 
   const msUntilNotification = scheduledTime.getTime() - now.getTime();
 
-  // Store timeout ID for cancellation
-  const timeoutId = setTimeout(() => {
+  // Store timeout ID in module variable (not localStorage - timeout IDs don't persist)
+  currentNotificationTimeout = setTimeout(() => {
     showDailyReminderNotification();
     // Schedule next day's notification
     scheduleDailyNotification(time);
   }, msUntilNotification);
-
-  // Store in localStorage for persistence
-  localStorage.setItem("damit-notification-timeout", timeoutId.toString());
 }
 
 // Show the actual notification
@@ -187,11 +217,12 @@ async function showDailyReminderNotification() {
 
 // Cancel scheduled notifications
 function cancelScheduledNotifications() {
-  const timeoutId = localStorage.getItem("damit-notification-timeout");
-  if (timeoutId) {
-    clearTimeout(Number(timeoutId));
-    localStorage.removeItem("damit-notification-timeout");
+  if (currentNotificationTimeout !== null) {
+    clearTimeout(currentNotificationTimeout);
+    currentNotificationTimeout = null;
   }
+  // Clean up any old timeout IDs from localStorage (legacy cleanup)
+  localStorage.removeItem("damit-notification-timeout");
 }
 
 // Notification click handling is done in the service worker (public/sw.js)

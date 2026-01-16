@@ -42,11 +42,11 @@ export const StatsDashboard = ({ logs }: StatsDashboardProps) => {
                     <div className="p-2 rounded-lg bg-primary/10 text-primary">
                         <TrendingUp className="w-4 h-4" />
                     </div>
-                    <span className="text-sm font-medium text-muted-foreground">Avg Diet</span>
+                    <span className="text-sm font-medium text-muted-foreground">Diet Score</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-bold text-foreground">{stats.avgDiet}</span>
-                    <span className="text-xs text-muted-foreground">/ 1.0</span>
+                    <span className="text-xs text-muted-foreground">/ 100</span>
                 </div>
             </motion.div>
 
@@ -78,11 +78,11 @@ export const StatsDashboard = ({ logs }: StatsDashboardProps) => {
                     <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
                         <Moon className="w-4 h-4" />
                     </div>
-                    <span className="text-sm font-medium text-muted-foreground">Avg Sleep</span>
+                    <span className="text-sm font-medium text-muted-foreground">Sleep Score</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-bold text-foreground">{stats.avgSleep}</span>
-                    <span className="text-xs text-muted-foreground">Hours</span>
+                    <span className="text-xs text-muted-foreground">/ 100</span>
                 </div>
             </motion.div>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -25,6 +25,20 @@ export function TimePicker({ value, onChange, className, id }: TimePickerProps) 
   };
   
   const [hours, minutes] = parseTime(value);
+  
+  // Normalize time value: round minutes to nearest 5 and sync back if different
+  useEffect(() => {
+    if (!value) return;
+    
+    const [h, m] = value.split(":").map(Number);
+    const roundedMinute = Math.round(m / 5) * 5;
+    const normalizedTime = `${String(h).padStart(2, "0")}:${String(roundedMinute).padStart(2, "0")}`;
+    
+    // If the rounded value differs from the input, sync it back
+    if (normalizedTime !== value) {
+      onChange(normalizedTime);
+    }
+  }, [value, onChange]);
   
   const handleHourChange = (newHour: number) => {
     const hour24 = newHour % 24;

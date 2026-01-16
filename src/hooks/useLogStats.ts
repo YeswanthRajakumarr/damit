@@ -18,10 +18,14 @@ export const useLogStats = (logs: DailyLog[] | undefined) => {
             return ["1", "yes", "yeah"].includes(val);
         }).length / recentLogs.length) * 100;
 
+        // Convert to scores out of 100 (multiply by 100 and round)
+        const avgDietScore = Math.round(avgDiet * 100);
+        const avgSleepScore = Math.round(avgSleep * 100);
+
         return {
-            avgDiet: avgDiet.toFixed(1),
+            avgDiet: avgDietScore,
             totalSteps: totalSteps.toLocaleString(),
-            avgSleep: avgSleep.toFixed(1),
+            avgSleep: avgSleepScore,
             mindsetRate: Math.round(mindsetRate),
         };
     }, [logs]);

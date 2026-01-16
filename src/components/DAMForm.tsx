@@ -5,7 +5,7 @@ import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
-import { Table2, CalendarIcon, AlertTriangle } from "lucide-react";
+import { Table2, CalendarIcon, AlertTriangle, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -67,24 +67,31 @@ export const DAMForm = () => {
         className="px-6 pt-8 pb-4"
       >
         <div className="flex items-center justify-between mb-6">
-          <div className="w-10 sm:w-32" /> {/* Layout balancer */}
-
           <div className="flex items-center gap-2">
             <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-            <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
+            <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
           </div>
 
           <div className="flex items-center gap-2">
+            <Link
+              to="/analytics"
+              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+              aria-label="Analytics"
+              title="Analytics"
+            >
+              <BarChart3 className="w-5 h-5 text-foreground" />
+            </Link>
             <ThemeToggle />
             <Link
               to="/logs"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium
                          bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all 
                          shadow-soft animate-glow border border-primary/20"
               data-testid="nav-logs"
+              title="Past DAMs"
             >
               <Table2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Past DAMs</span>
+              <span className="hidden md:inline">Past DAMs</span>
             </Link>
             <UserMenu />
           </div>

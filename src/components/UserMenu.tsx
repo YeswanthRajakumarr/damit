@@ -1,5 +1,6 @@
 import { LogOut, User as UserIcon, TrendingUp, Heart } from "lucide-react";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useEmojiAvatar } from "@/hooks/useEmojiAvatar";
 import { toast } from "sonner";
 import {
     DropdownMenu,
@@ -14,6 +15,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const UserMenu = () => {
     const { user, signOut } = useAuthContext();
+    const { emoji } = useEmojiAvatar();
 
     const handleLogout = async () => {
         const { error } = await signOut();
@@ -33,8 +35,8 @@ export const UserMenu = () => {
             <DropdownMenuTrigger asChild>
                 <button className="focus:outline-none">
                     <Avatar className="h-9 w-9 border border-border/50 shadow-soft hover:shadow-card transition-all">
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                            {initial}
+                        <AvatarFallback className={emoji ? "bg-secondary/50 text-2xl" : "bg-primary/10 text-primary font-bold text-lg"}>
+                            {emoji || initial}
                         </AvatarFallback>
                     </Avatar>
                 </button>

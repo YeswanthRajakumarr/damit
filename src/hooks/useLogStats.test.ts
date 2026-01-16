@@ -47,8 +47,8 @@ describe("useLogStats", () => {
 
         const { result } = renderHook(() => useLogStats(logs));
 
-        // avgDiet: (1 + 0.5 + 0.25 + 1 + 0 + 0.5 + 1) / 7 = 4.25 / 7 = 0.607... -> 0.6
-        expect(result.current?.avgDiet).toBe("0.6");
+        // avgDiet: (1 + 0.5 + 0.25 + 1 + 0 + 0.5 + 1) / 7 = 4.25 / 7 = 0.607... -> 61/100
+        expect(result.current?.avgDiet).toBe(61);
 
         // totalSteps: 10k + 5k + 2k + 15k + 0 + 8k + 12k = 52,000
         expect(result.current?.totalSteps).toBe("52,000");
@@ -63,7 +63,8 @@ describe("useLogStats", () => {
             createMockLog({ diet: 0, step_count: 0, proud_of_yourself: "no" }),
         ];
         const { result } = renderHook(() => useLogStats(logs));
-        expect(result.current?.avgDiet).toBe("0.5");
+        // avgDiet: (1 + 0) / 2 = 0.5 -> 50/100
+        expect(result.current?.avgDiet).toBe(50);
         expect(result.current?.totalSteps).toBe("1,000");
         expect(result.current?.mindsetRate).toBe(50);
     });
@@ -88,7 +89,8 @@ describe("useLogStats", () => {
             createMockLog({ diet: null, step_count: null, proud_of_yourself: null as any }),
         ];
         const { result } = renderHook(() => useLogStats(logs));
-        expect(result.current?.avgDiet).toBe("0.0");
+        // avgDiet: 0 -> 0/100
+        expect(result.current?.avgDiet).toBe(0);
         expect(result.current?.totalSteps).toBe("0");
         expect(result.current?.mindsetRate).toBe(0);
     });

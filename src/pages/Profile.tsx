@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Share2, Copy, Check, Globe } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
 import { NotificationSettings } from "@/components/NotificationSettings";
+import { EmojiPicker } from "@/components/EmojiPicker";
+import { useEmojiAvatar } from "@/hooks/useEmojiAvatar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 export default function Profile() {
     const { user } = useAuthContext();
+    const { emoji, updateEmoji } = useEmojiAvatar();
     const [copied, setCopied] = useState(false);
 
     const handleShare = async () => {
@@ -45,9 +49,17 @@ export default function Profile() {
                     </Link>
                     <div className="flex items-center gap-2">
                         <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-                        <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
+                        <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
                     </div>
                     <div className="flex items-center gap-2">
+                        <Link
+                            to="/analytics"
+                            className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                            aria-label="Analytics"
+                            title="Analytics"
+                        >
+                            <BarChart3 className="w-5 h-5 text-foreground" />
+                        </Link>
                         <ThemeToggle />
                         <UserMenu />
                     </div>
@@ -58,6 +70,28 @@ export default function Profile() {
 
             {/* Main Content */}
             <main className="px-6 pb-8 space-y-6">
+                <Card className="border-border/50">
+                    <CardHeader>
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                                <User className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <CardTitle>Avatar</CardTitle>
+                                <CardDescription>
+                                    Choose an emoji to represent yourself
+                                </CardDescription>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <EmojiPicker value={emoji} onChange={(newEmoji) => {
+                            updateEmoji(newEmoji);
+                            toast.success("Avatar updated!");
+                        }} />
+                    </CardContent>
+                </Card>
+
                 <div className="p-8 rounded-3xl bg-card border border-border/50 shadow-soft backdrop-blur-sm relative overflow-hidden group">
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-4">

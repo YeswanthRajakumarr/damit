@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, BellOff, Clock, Check } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -21,6 +21,11 @@ export function NotificationSettings() {
 
   const [timeValue, setTimeValue] = useState(settings.time);
 
+  // Sync timeValue with settings.time when it changes externally
+  useEffect(() => {
+    setTimeValue(settings.time);
+  }, [settings.time]);
+
   const handleTimeChange = (newTime: string) => {
     setTimeValue(newTime);
     updateSettings({ time: newTime });
@@ -28,10 +33,15 @@ export function NotificationSettings() {
   };
 
   const handleToggle = async (enabled: boolean) => {
-    if (enabled) {
-      await enableNotifications();
-    } else {
-      disableNotifications();
+    try {
+      if (enabled) {
+        await enableNotifications();
+      } else {
+        disableNotifications();
+      }
+    } catch (error) {
+      console.error("Error toggling notifications:", error);
+      toast.error("Failed to update notification settings. Please try again.");
     }
   };
 
