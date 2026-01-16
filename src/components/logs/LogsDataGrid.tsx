@@ -20,6 +20,7 @@ interface LogsDataGridProps {
     currentPage: number;
     pageSize: number;
     onPageChange: (page: number) => void;
+    onPageSizeChange: (size: number) => void;
     isLoading: boolean;
     error: Error | null;
     onLogClick: (log: DailyLog) => void;
@@ -43,9 +44,10 @@ const getValueColor = (value: number | null): string => {
     return "text-destructive";
 };
 
-export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageChange, isLoading, error, onLogClick }: LogsDataGridProps) {
+export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageChange, onPageSizeChange, isLoading, error, onLogClick }: LogsDataGridProps) {
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [jumpPage, setJumpPage] = useState("");
 
     const sortedLogs = useMemo(() => {
         if (!logs) return [];
@@ -114,6 +116,17 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
     };
 
     const totalPages = Math.ceil(totalCount / pageSize);
+
+    const handleJump = (e: React.FormEvent) => {
+        e.preventDefault();
+        const pageNum = parseInt(jumpPage);
+        if (!isNaN(pageNum) && pageNum > 0 && pageNum <= totalPages) {
+            onPageChange(pageNum - 1);
+            setJumpPage("");
+        } else {
+            toast.error(`Please enter a page between 1 and ${totalPages}`);
+        }
+    };
 
     return (
         <div className="space-y-4">
@@ -262,40 +275,69 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
             </motion.div>
 
             {/* Pagination Controls */}
-            {totalCount > pageSize && (
-                <div className="flex items-center justify-between px-2">
-                    <p className="text-sm text-muted-foreground">
-                        Showing <span className="font-medium">{currentPage * pageSize + 1}</span> to <span className="font-medium">{Math.min((currentPage + 1) * pageSize, totalCount)}</span> of <span className="font-medium">{totalCount}</span> results
-                    </p>
+            {totalCount > 0 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+                    <div className="flex items-center gap-4">
+                        <p className="text-sm text-muted-foreground">
+                            Showing <span className="font-medium">{currentPage * pageSize + 1}</span> to <span className="font-medium">{Math.min((currentPage + 1) * pageSize, totalCount)}</span> of <span className="font-medium">{totalCount}</span> results
+                        </p>
+
+                        <select
+                            value={pageSize}
+                            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                            className="text-xs bg-card border border-border/50 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary/50"
+                        >
+                            {[10, 15, 20, 50, 100].map(size => (
+                                <option key={size} value={size}>{size} per page</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => onPageChange(currentPage - 1)}
-                            disabled={currentPage === 0 || isLoading}
-                            className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                        >
-                            <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <div className="flex items-center gap-1">
-                            {[...Array(totalPages)].map((_, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => onPageChange(i)}
-                                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === i
-                                        ? "bg-primary text-white shadow-sm"
-                                        : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                                        }`}
-                                >
-                                    {i + 1}
-                                </button>
-                            )).slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 3))}
+                        <div className="flex items-center gap-1 bg-card/50 p-1 rounded-xl border border-border/50">
+                            <button
+                                onClick={() => onPageChange(currentPage - 1)}
+                                disabled={currentPage === 0 || isLoading}
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </button>
+
+                            <div className="flex items-center gap-1">
+                                {[...Array(totalPages)].map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => onPageChange(i)}
+                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === i
+                                            ? "bg-primary text-white shadow-sm"
+                                            : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                            }`}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                )).slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 3))}
+                            </div>
+
+                            <button
+                                onClick={() => onPageChange(currentPage + 1)}
+                                disabled={currentPage >= totalPages - 1 || isLoading}
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
                         </div>
-                        <button
-                            onClick={() => onPageChange(currentPage + 1)}
-                            disabled={currentPage >= totalPages - 1 || isLoading}
-                            className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                        >
-                            <ChevronRight className="w-5 h-5" />
-                        </button>
+
+                        {totalPages > 5 && (
+                            <form onSubmit={handleJump} className="flex items-center gap-2 ml-2">
+                                <input
+                                    type="text"
+                                    placeholder="Jump to..."
+                                    value={jumpPage}
+                                    onChange={(e) => setJumpPage(e.target.value)}
+                                    className="w-16 px-2 py-1.5 text-xs bg-card border border-border/50 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                />
+                            </form>
+                        )}
                     </div>
                 </div>
             )}

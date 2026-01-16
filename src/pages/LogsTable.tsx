@@ -14,12 +14,17 @@ import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
 
 const LogsTable = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 15;
+  const [pageSize, setPageSize] = useState(15);
   const { data, isLoading, error } = useDailyLogs(currentPage, pageSize);
   const logs = data?.logs;
   const totalCount = data?.totalCount || 0;
   const [selectedLog, setSelectedLog] = useState<DailyLog | null>(null);
   const deleteLog = useDeleteLog();
+
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setCurrentPage(0); // Reset to first page
+  };
 
 
 
@@ -118,6 +123,7 @@ const LogsTable = () => {
           currentPage={currentPage}
           pageSize={pageSize}
           onPageChange={setCurrentPage}
+          onPageSizeChange={handlePageSizeChange}
           isLoading={isLoading}
           error={error as Error | null}
           onLogClick={setSelectedLog}
