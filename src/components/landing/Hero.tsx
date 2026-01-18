@@ -28,7 +28,7 @@ export const Hero = () => {
                         </h1>
 
                         <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
-                            Track your daily wins, visualize your progress, and build streaks that last.
+                            Track your daily wins, visualize your progress, with Daily Accountable Messages(DAM).
                             The simple, premium way to stay accountable to yourself.
                         </p>
 
