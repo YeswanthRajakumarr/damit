@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -100,6 +100,10 @@ const App = () => {
                       }
                     />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="/logs" element={<Navigate to="/app/logs" replace />} />
+                    <Route path="/profile" element={<Navigate to="/app/profile" replace />} />
+                    <Route path="/analytics" element={<Navigate to="/app/analytics" replace />} />
+                    <Route path="/gratitude" element={<Navigate to="/app/gratitude" replace />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>

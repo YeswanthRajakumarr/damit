@@ -25,9 +25,13 @@ export const useDailyLogs = (page?: number, pageSize?: number) => {
   return useQuery({
     queryKey: ["daily-logs", page, pageSize],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
       let query = supabase
         .from("daily_logs")
         .select("*", { count: "exact" })
+        .eq("user_id", user.id)
         .order("log_date", { ascending: false });
 
       if (page !== undefined && pageSize !== undefined) {
@@ -121,10 +125,14 @@ export const useDeleteLog = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
       const { error } = await supabase
         .from("daily_logs")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("user_id", user.id);
 
       if (error) throw error;
       return id;
