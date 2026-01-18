@@ -21,7 +21,7 @@ const Analytics = () => {
                 <header className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <Link
-                            to="/"
+                            to="/app"
                             className="p-2 rounded-xl bg-secondary/80 text-secondary-foreground hover:bg-secondary transition-all border border-border/50"
                         >
                             <ArrowLeft className="w-5 h-5" />
@@ -64,11 +64,11 @@ const Analytics = () => {
                                     No Data Yet
                                 </h2>
                                 <p className="text-muted-foreground mb-6 max-w-sm">
-                                    Start tracking your daily progress to see analytics, trends, and insights. 
+                                    Start tracking your daily progress to see analytics, trends, and insights.
                                     Fill out your first daily log to get started!
                                 </p>
                                 <Button asChild size="lg" className="gap-2">
-                                    <Link to="/">
+                                    <Link to="/app">
                                         <Plus className="w-4 h-4" />
                                         Fill Your First Log
                                     </Link>

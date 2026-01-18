@@ -13,6 +13,7 @@ import { setupNotificationHandlers } from "@/utils/notificationServiceWorker";
 
 // Lazy load pages
 const Index = lazy(() => import("./pages/Index"));
+const Landing = lazy(() => import("./pages/Landing"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PublicRecords = lazy(() => import("./pages/PublicRecords"));
 const LogsTable = lazy(() => import("./pages/LogsTable"));
@@ -45,68 +46,69 @@ const App = () => {
   }, []);
 
   return (
-  <QueryClientProvider client={queryClient}>
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark" storageKey="dam-ui-theme">
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/p/:userId" element={<PublicRecords />} />
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Index />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/logs"
-                    element={
-                      <ProtectedRoute>
-                        <LogsTable />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/analytics"
-                    element={
-                      <ProtectedRoute>
-                        <Analytics />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/gratitude"
-                    element={
-                      <ProtectedRoute>
-                        <Gratitude />
-                      </ProtectedRoute>
-                    }
-                  />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <ThemeProvider defaultTheme="dark" storageKey="dam-ui-theme">
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/p/:userId" element={<PublicRecords />} />
+                    <Route
+                      path="/app"
+                      element={
+                        <ProtectedRoute>
+                          <Index />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/app/logs"
+                      element={
+                        <ProtectedRoute>
+                          <LogsTable />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/app/profile"
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/app/analytics"
+                      element={
+                        <ProtectedRoute>
+                          <Analytics />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/app/gratitude"
+                      element={
+                        <ProtectedRoute>
+                          <Gratitude />
+                        </ProtectedRoute>
+                      }
+                    />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </ErrorBoundary>
+    </QueryClientProvider>
   );
 };
 

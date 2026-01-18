@@ -44,7 +44,7 @@ export const UserMenu = () => {
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <Link to="/profile" className="text-sm font-medium leading-none text-foreground hover:underline">
+                        <Link to="/app/profile" className="text-sm font-medium leading-none text-foreground hover:underline">
                             Profile
                         </Link>
                         <p className="text-xs leading-none text-muted-foreground truncate">
@@ -54,13 +54,13 @@ export const UserMenu = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link to="/analytics" className="cursor-pointer">
+                    <Link to="/app/analytics" className="cursor-pointer">
                         <TrendingUp className="mr-2 h-4 w-4" />
                         <span>Analytics</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link to="/gratitude" className="cursor-pointer">
+                    <Link to="/app/gratitude" className="cursor-pointer">
                         <Heart className="mr-2 h-4 w-4 text-destructive" />
                         <span>Gratitude Wall</span>
                     </Link>

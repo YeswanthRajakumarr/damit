@@ -15,7 +15,7 @@ export default function Gratitude() {
                 <header className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <Link
-                            to="/"
+                            to="/app"
                             className="p-2 rounded-xl bg-secondary/80 text-secondary-foreground hover:bg-secondary transition-all border border-border/50"
                         >
                             <ArrowLeft className="w-5 h-5" />

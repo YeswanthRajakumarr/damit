@@ -27,14 +27,14 @@ export default function Auth() {
         } = await signIn(email, password);
         if (error) throw error;
         toast.success("Welcome back!");
-        navigate("/");
+        navigate("/app");
       } else {
         const {
           error
         } = await signUp(email, password, displayName);
         if (error) throw error;
         toast.success("Account created! Welcome!");
-        navigate("/");
+        navigate("/app");
       }
     } catch (error: any) {
       toast.error(error.message || "Authentication failed");

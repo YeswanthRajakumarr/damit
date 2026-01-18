@@ -75,7 +75,7 @@ const LogsTable = () => {
       >
         <div className="flex items-center justify-between mb-6">
           <Link
-            to="/"
+            to="/app"
             className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />

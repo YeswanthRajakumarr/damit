@@ -41,7 +41,7 @@ export default function Profile() {
             >
                 <div className="flex items-center justify-between mb-6">
                     <Link
-                        to="/"
+                        to="/app"
                         className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                     >
                         <ArrowLeft className="w-5 h-5" />
@@ -53,7 +53,7 @@ export default function Profile() {
                     </div>
                     <div className="flex items-center gap-2">
                         <Link
-                            to="/analytics"
+                            to="/app/analytics"
                             className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
                             aria-label="Analytics"
                             title="Analytics"
