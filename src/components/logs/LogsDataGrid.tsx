@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { Loader2, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Zap, Brain, Dumbbell, Droplets, Moon, Utensils, Footprints, Heart, Cookie, Flame } from "lucide-react";
 import { toast } from "sonner";
 import { DailyLog } from "@/hooks/useDailyLogs";
 import {
@@ -69,16 +69,16 @@ const StatusIndicator = ({ value }: { value: number | null }) => {
 };
 
 const METRICS = [
-    { label: "Diet", key: "diet", type: "status" },
-    { label: "Energy", key: "energy_level", type: "status" },
-    { label: "Stress", key: "stress_fatigue", type: "status" },
-    { label: "Workout", key: "workout", type: "status" },
-    { label: "Water", key: "water_intake", type: "status" },
-    { label: "Sleep", key: "sleep_last_night", type: "status" },
-    { label: "Cravings", key: "cravings", type: "status" },
-    { label: "Hunger", key: "hunger_level", type: "status" },
-    { label: "Steps(10k)", key: "step_count", type: "number" },
-    { label: "Mindset", key: "proud_of_yourself", type: "boolean" },
+    { label: "Diet", key: "diet", type: "status", icon: Utensils, color: "text-emerald-500" },
+    { label: "Energy", key: "energy_level", type: "status", icon: Zap, color: "text-amber-500" },
+    { label: "Stress", key: "stress_fatigue", type: "status", icon: Brain, color: "text-purple-500" },
+    { label: "Workout", key: "workout", type: "status", icon: Dumbbell, color: "text-blue-500" },
+    { label: "Water", key: "water_intake", type: "status", icon: Droplets, color: "text-cyan-500" },
+    { label: "Sleep", key: "sleep_last_night", type: "status", icon: Moon, color: "text-indigo-500" },
+    { label: "Cravings", key: "cravings", type: "status", icon: Cookie, color: "text-orange-500" },
+    { label: "Hunger", key: "hunger_level", type: "status", icon: Flame, color: "text-red-500" },
+    { label: "Steps(10k)", key: "step_count", type: "number", icon: Footprints, color: "text-teal-500" },
+    { label: "Mindset", key: "proud_of_yourself", type: "boolean", icon: Heart, color: "text-rose-500" },
 ];
 
 export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageChange, onPageSizeChange, isLoading, error, onLogClick }: LogsDataGridProps) {
@@ -140,7 +140,7 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                         <TableHeader>
                             <TableRow className="border-border/50 hover:bg-transparent">
                                 <TableHead
-                                    className="sticky left-0 bg-card/95 backdrop-blur-sm z-30 min-w-[100px] font-bold text-foreground border-r border-border/50 cursor-pointer hover:text-primary transition-colors text-[10px] uppercase tracking-wider"
+                                    className="sticky left-0 bg-card/95 backdrop-blur-sm z-30 min-w-[85px] sm:min-w-[110px] font-bold text-foreground border-r border-border/50 cursor-pointer hover:text-primary transition-colors text-[9px] sm:text-[10px] uppercase tracking-wider px-2"
                                     onClick={toggleSort}
                                 >
                                     <div className="flex items-center gap-1">
@@ -151,15 +151,16 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                                 {sortedLogs.map((log) => (
                                     <TableHead
                                         key={log.id}
-                                        className="text-center min-w-[85px] py-2 bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors border-r border-border/10 last:border-r-0"
+                                        className="text-center min-w-[45px] sm:min-w-[85px] py-1 sm:py-2 bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors border-r border-border/10 last:border-r-0 px-1"
                                         onClick={() => onLogClick(log)}
                                     >
-                                        <div className="flex flex-col items-center gap-0.5">
-                                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+                                        <div className="flex flex-col items-center gap-0">
+                                            <span className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-0.5">
                                                 {format(new Date(log.log_date), "EEE")}
                                             </span>
-                                            <span className="text-sm font-bold text-foreground whitespace-nowrap">
-                                                {format(new Date(log.log_date), "MMM d")}
+                                            <span className="text-[10px] sm:text-sm font-bold text-foreground whitespace-nowrap leading-none">
+                                                {format(new Date(log.log_date), "d")}
+                                                <span className="hidden sm:inline"> {format(new Date(log.log_date), "MMM")}</span>
                                             </span>
                                         </div>
                                     </TableHead>
@@ -169,8 +170,16 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                         <TableBody>
                             {METRICS.map((metric) => (
                                 <TableRow key={metric.key} className="border-border/30 hover:bg-muted/5 transition-colors group">
-                                    <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-20 font-bold text-[10px] py-2 border-r border-border/50 text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-tight">
-                                        {metric.label}
+                                    <TableCell className="sticky left-0 bg-card/95 backdrop-blur-sm z-20 font-bold text-[9px] sm:text-[10px] py-1.5 sm:py-2 px-2 border-r border-border/50 text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-tight min-w-[85px] sm:min-w-[110px]">
+                                        <div className="flex items-center gap-1 sm:gap-1.5">
+                                            {metric.icon && (
+                                                <metric.icon className={cn(
+                                                    "w-3 h-3 sm:w-4 sm:h-4 shrink-0 transition-opacity",
+                                                    (metric as any).color
+                                                )} />
+                                            )}
+                                            <span className="truncate">{metric.label}</span>
+                                        </div>
                                     </TableCell>
                                     {sortedLogs.map((log) => {
                                         const value = (log as any)[metric.key];
@@ -178,7 +187,7 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                                         return (
                                             <TableCell
                                                 key={`${log.id}-${metric.key}`}
-                                                className="text-center py-2 cursor-pointer border-r border-border/10 last:border-r-0"
+                                                className="text-center py-1.5 sm:py-2 px-1 cursor-pointer border-r border-border/10 last:border-r-0"
                                                 onClick={() => onLogClick(log)}
                                             >
                                                 {metric.type === "status" ? (
