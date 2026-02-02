@@ -2,11 +2,19 @@ import { useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+    const { user, loading } = useAuthContext();
+    const navigate = useNavigate();
+
     useEffect(() => {
         document.title = "DAMit! - Daily Accountability Made Simple";
-    }, []);
+        if (!loading && user) {
+            navigate("/app");
+        }
+    }, [user, loading, navigate]);
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20">

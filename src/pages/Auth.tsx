@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -14,9 +14,17 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const {
     signIn,
-    signUp
-  } = useAuth();
+    signUp,
+    user,
+    loading: authLoading
+  } = useAuthContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/app");
+    }
+  }, [user, authLoading, navigate]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

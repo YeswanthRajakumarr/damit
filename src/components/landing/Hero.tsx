@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export const Hero = () => {
+    const { user } = useAuthContext();
     return (
         <div className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-32">
             {/* Abstract Background Elemets */}
@@ -33,11 +35,19 @@ export const Hero = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                            <Link to="/auth?mode=signup">
-                                <Button size="lg" className="h-12 px-8 rounded-full text-lg w-full sm:w-auto">
-                                    Start for Free <ArrowRight className="w-4 h-4 ml-2" />
-                                </Button>
-                            </Link>
+                            {user ? (
+                                <Link to="/app">
+                                    <Button size="lg" className="h-12 px-8 rounded-full text-lg w-full sm:w-auto">
+                                        Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </Link>
+                            ) : (
+                                <Link to="/auth?mode=signup">
+                                    <Button size="lg" className="h-12 px-8 rounded-full text-lg w-full sm:w-auto">
+                                        Start for Free <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </Link>
+                            )}
                             <a href="https://damit.vercel.app/p/42167fe0-097f-48aa-99c0-b77087a69d89" target="_blank" rel="noopener noreferrer">
                                 <Button variant="outline" size="lg" className="h-12 px-8 rounded-full text-lg w-full sm:w-auto hover:bg-secondary/50">
                                     View Public Demo

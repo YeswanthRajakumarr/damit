@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export const Navbar = () => {
   return (
@@ -16,16 +17,26 @@ export const Navbar = () => {
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Link to="/auth">
-              <Button variant="ghost" className="hidden sm:inline-flex">
-                Log In
-              </Button>
-            </Link>
-            <Link to="/auth?mode=signup">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6">
-                Get Started
-              </Button>
-            </Link>
+            {useAuthContext().user ? (
+              <Link to="/app">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6">
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="ghost" className="hidden sm:inline-flex">
+                    Log In
+                  </Button>
+                </Link>
+                <Link to="/auth?mode=signup">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
