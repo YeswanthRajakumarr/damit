@@ -63,12 +63,14 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
                 else if (sleepValue === 0) sleepLabel = "Bad";
                 else if (sleepValue === -1) sleepLabel = "Too bad";
 
+                const normalize = (val: number | null | undefined) => (val === -1 ? -0.5 : (val ?? 0));
+
                 return {
                     date: format(parseISO(log.log_date), "MMM d"),
-                    energy: log.energy_level ?? 0,
-                    stress: log.stress_fatigue ?? 0,
-                    diet: log.diet ?? 0,
-                    sleep: sleepValue,
+                    energy: normalize(log.energy_level),
+                    stress: normalize(log.stress_fatigue),
+                    diet: normalize(log.diet),
+                    sleep: normalize(sleepValue),
                     sleepLabel,
                 };
             });
@@ -114,7 +116,7 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
 
             <div className="h-[250px] sm:h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 10, left: 5, bottom: 5 }}>
+                    <LineChart data={chartData} margin={{ top: 5, right: 10, left: 5, bottom: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
                         <XAxis
                             dataKey="date"
@@ -123,15 +125,17 @@ export const TrendChart = ({ logs }: TrendChartProps) => {
                             tickLine={false}
                             axisLine={false}
                             minTickGap={15}
+                            dy={10}
                         />
                         <YAxis
                             stroke="hsl(var(--muted-foreground))"
                             fontSize={10}
                             tickLine={false}
                             axisLine={false}
-                            domain={[0, 1]}
-                            ticks={[0, 0.5, 1]}
+                            domain={[-0.6, 1.1]}
+                            ticks={[-0.5, 0, 0.5, 1]}
                             tickFormatter={(value) => {
+                                if (value === -0.5) return "Worst";
                                 if (value === 0) return "Poor";
                                 if (value === 0.5) return "Balanced";
                                 if (value === 1) return "Excellent";

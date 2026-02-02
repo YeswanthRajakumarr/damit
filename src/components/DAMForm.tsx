@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { useCheckExistingLog } from "@/hooks/useDailyLogs";
+import { MissingLogsAlert } from "./MissingLogsAlert";
 
 export const DAMForm = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -164,6 +165,11 @@ export const DAMForm = () => {
               </motion.div>
             )}
           </div>
+        )}
+
+        {/* Missing Logs Alert */}
+        {!isComplete && (
+          <MissingLogsAlert onSelectDate={setSelectedDate} />
         )}
 
         {!isComplete && (
