@@ -38,6 +38,11 @@ export const DAMForm = () => {
     }
   }, [location]);
 
+  // Reset imageFile when date changes to avoid associating image with wrong date
+  useEffect(() => {
+    setImageFile(null);
+  }, [selectedDate]);
+
   const { data: existingLog, isLoading: checkingLog } = useCheckExistingLog(selectedDate);
 
   const currentQuestion = questions[currentIndex];

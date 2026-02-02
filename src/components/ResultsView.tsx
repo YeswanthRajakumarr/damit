@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { questions, formatAnswerForCopy, Question } from "@/data/questions";
 import { Copy, Check, RotateCcw, Table2, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useSaveDailyLog } from "@/hooks/useDailyLogs";
 import { Link } from "react-router-dom";
@@ -18,14 +18,14 @@ interface ResultsViewProps {
 export const ResultsView = ({ answers, onReset, selectedDate, imageFile }: ResultsViewProps) => {
   const [copied, setCopied] = useState(false);
   const saveMutation = useSaveDailyLog();
-  const [saved, setSaved] = useState(false);
+  const hasSaved = useRef(false);
 
   // Save to database when component mounts
   useEffect(() => {
-    if (!saved) {
+    if (!hasSaved.current) {
+      hasSaved.current = true;
       saveMutation.mutate({ answers, selectedDate, imageFile }, {
         onSuccess: () => {
-          setSaved(true);
           toast.success("DAMit! saved to database!");
 
           confetti({
@@ -37,10 +37,11 @@ export const ResultsView = ({ answers, onReset, selectedDate, imageFile }: Resul
         },
         onError: () => {
           toast.error("Failed to save DAMit!");
+          hasSaved.current = false; // Allow retry on error
         },
       });
     }
-  }, []);
+  }, [answers, selectedDate, imageFile, saveMutation]);
 
   const generateCopyText = () => {
     const dateStr = format(selectedDate, "EEEE, MMMM d, yyyy");

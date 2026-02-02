@@ -3,6 +3,7 @@ import { Camera, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
     onImageSelect: (file: File | null) => void;
@@ -16,8 +17,15 @@ export const ImageUpload = ({ onImageSelect, existingImageUrl }: ImageUploadProp
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                toast.error('Please select a valid image file');
+                return;
+            }
+
+            // Validate file size
             if (file.size > 5 * 1024 * 1024) {
-                alert("Image size should be less than 5MB");
+                toast.error('Image size should be less than 5MB');
                 return;
             }
 
@@ -25,6 +33,9 @@ export const ImageUpload = ({ onImageSelect, existingImageUrl }: ImageUploadProp
             reader.onloadend = () => {
                 setPreview(reader.result as string);
                 onImageSelect(file);
+            };
+            reader.onerror = () => {
+                toast.error('Failed to read image file. Please try again.');
             };
             reader.readAsDataURL(file);
         }

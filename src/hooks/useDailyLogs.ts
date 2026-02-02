@@ -100,10 +100,29 @@ export const useSaveDailyLog = () => {
       const logDate = formatDateLocal(selectedDate);
       let photoUrl = (answers as any).photo_url || null;
 
+      // Check if there's an existing log to get the old photo URL
+      const { data: existingLog } = await supabase
+        .from("daily_logs")
+        .select("photo_url")
+        .eq("log_date", logDate)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
       // Upload image if provided
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
+        const fileExt = imageFile.name.split('.').pop() || 'jpg';
         const fileName = `${user.id}/${logDate}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        // Delete old photo if exists and we're uploading a new one
+        if (existingLog?.photo_url) {
+          const oldFileName = existingLog.photo_url.split('/').pop();
+          if (oldFileName) {
+            const oldFilePath = `${user.id}/${oldFileName}`;
+            await supabase.storage
+              .from('log-photos')
+              .remove([oldFilePath]);
+          }
+        }
 
         const { error: uploadError } = await supabase.storage
           .from('log-photos')
