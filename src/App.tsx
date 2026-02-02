@@ -21,6 +21,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Gratitude = lazy(() => import("./pages/Gratitude"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,14 @@ const App = () => {
                       element={
                         <ProtectedRoute>
                           <Gratitude />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/app/notifications"
+                      element={
+                        <ProtectedRoute>
+                          <Notifications />
                         </ProtectedRoute>
                       }
                     />

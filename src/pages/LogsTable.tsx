@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 
 import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const LogsTable = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -84,51 +85,53 @@ const LogsTable = () => {
         animate={{ opacity: 1, y: 0 }}
         className="px-6 pt-8 pb-4"
       >
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-6">
-          <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Top Row: Navigation & App Branding */}
+          <div className="flex items-center justify-between gap-4">
             <Link
               to="/app"
-              className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+              className="group flex items-center gap-2 p-1.5 rounded-xl text-muted-foreground hover:text-foreground transition-all"
             >
-              <ArrowLeft className="w-5 h-5" />
-              <span className="hidden sm:inline">Back</span>
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="hidden sm:inline font-medium">Back</span>
             </Link>
 
-            <div className="flex items-center gap-2">
-              <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-              <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
+            <div className="flex items-center gap-2.5">
+              <img src="/favicon.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-soft" />
+              <h1 className="text-lg font-black tracking-tighter text-foreground">DAMit!</h1>
             </div>
 
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-secondary/30 p-1 rounded-xl border border-border/40">
               <Link
                 to="/analytics"
-                className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
                 aria-label="Analytics"
-                title="Analytics"
               >
-                <BarChart3 className="w-5 h-5 text-foreground" />
+                <BarChart3 className="w-4 h-4" />
               </Link>
               <ThemeToggle />
+              <NotificationBell />
               <UserMenu />
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50">
+          {/* Bottom Row: Controls/Filters */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50 overflow-hidden w-full max-w-xs sm:w-fit">
               <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"ghost"}
                     className={cn(
-                      "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                      "h-8 flex-1 sm:flex-none px-3 text-[10px] sm:text-xs font-semibold rounded-lg transition-all hover:bg-secondary truncate",
                       !startDate && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                    <CalendarIcon className="mr-2 h-3 w-3 text-primary shrink-0" />
                     {startDate ? format(startDate, "MMM d, y") : "Start Date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="end">
+                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="center">
                   <Calendar
                     mode="single"
                     selected={startDate}
@@ -146,22 +149,22 @@ const LogsTable = () => {
                 </PopoverContent>
               </Popover>
 
-              <span className="text-muted-foreground text-xs font-bold">to</span>
+              <span className="text-muted-foreground text-[10px] font-bold px-1 opacity-50 uppercase">to</span>
 
               <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"ghost"}
                     className={cn(
-                      "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                      "h-8 flex-1 sm:flex-none px-3 text-[10px] sm:text-xs font-semibold rounded-lg transition-all hover:bg-secondary truncate",
                       !endDate && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                    <CalendarIcon className="mr-2 h-3 w-3 text-primary shrink-0" />
                     {endDate ? format(endDate, "MMM d, y") : "End Date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="end">
+                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="center">
                   <Calendar
                     mode="single"
                     selected={endDate}
@@ -173,7 +176,6 @@ const LogsTable = () => {
                           toast.error("Maximum range is 30 days");
                           return;
                         }
-                        // Adjust page size to fit the entire range
                         setPageSize(diffDays + 1);
                       }
                       setEndDate(date);
@@ -187,19 +189,6 @@ const LogsTable = () => {
                 </PopoverContent>
               </Popover>
             </div>
-
-            <div className="hidden lg:flex items-center gap-2">
-              <Link
-                to="/analytics"
-                className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-                aria-label="Analytics"
-                title="Analytics"
-              >
-                <BarChart3 className="w-5 h-5 text-foreground" />
-              </Link>
-              <ThemeToggle />
-              <UserMenu />
-            </div>
           </div>
         </div>
       </motion.header>
@@ -207,11 +196,12 @@ const LogsTable = () => {
       {/* Main Content */}
       <main className="px-4 pb-8 space-y-4">
         {/* Legend */}
+        {/* Contents were already fixed in previous step, ensuring tags match now */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 py-1.5 px-3 bg-card/40 backdrop-blur-sm rounded-xl border border-border/50 w-full max-w-sm sm:w-fit mx-auto text-[10px] sm:text-xs"
+          className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 py-1.5 px-3 bg-card/40 backdrop-blur-sm rounded-xl border border-border/50 w-full max-w-sm sm:w-fit mx-auto text-[10px] sm:text-xs shadow-sm"
         >
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" />

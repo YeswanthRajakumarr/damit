@@ -6,24 +6,38 @@ import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
 import { InstallPrompt } from "./InstallPrompt";
 import { Table2, CalendarIcon, AlertTriangle, BarChart3 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { format, subDays, startOfToday, isSameDay } from "date-fns";
+import { format, subDays, startOfToday, isSameDay, parseISO } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { useCheckExistingLog } from "@/hooks/useDailyLogs";
-import { MissingLogsAlert } from "./MissingLogsAlert";
+import { useEffect } from "react";
+import { NotificationBell } from "./NotificationBell";
 
 export const DAMForm = () => {
+  const location = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | number | null>>({});
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  useEffect(() => {
+    // Check if we were passed a date via navigation state
+    const state = location.state as { selectedDate?: string } | null;
+    if (state?.selectedDate) {
+      const date = parseISO(state.selectedDate);
+      setSelectedDate(date);
+      // Clean up state to prevent re-applying on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   const { data: existingLog, isLoading: checkingLog } = useCheckExistingLog(selectedDate);
 
   const currentQuestion = questions[currentIndex];
@@ -73,7 +87,7 @@ export const DAMForm = () => {
             <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Link
               to="/analytics"
               className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
@@ -83,16 +97,17 @@ export const DAMForm = () => {
               <BarChart3 className="w-5 h-5 text-foreground" />
             </Link>
             <ThemeToggle />
+            <NotificationBell />
             <Link
               to="/logs"
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-sm font-medium
                          bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all 
-                         shadow-soft animate-glow border border-primary/20"
+                         shadow-soft border border-border/50"
               data-testid="nav-logs"
               title="Past DAMs"
             >
-              <Table2 className="w-4 h-4" />
-              <span className="hidden md:inline">Past DAMs</span>
+              <Table2 className="w-5 h-5" />
+              <span className="hidden lg:inline">Past DAMs</span>
             </Link>
             <UserMenu />
           </div>
@@ -167,10 +182,6 @@ export const DAMForm = () => {
           </div>
         )}
 
-        {/* Missing Logs Alert */}
-        {!isComplete && (
-          <MissingLogsAlert onSelectDate={setSelectedDate} />
-        )}
 
         {!isComplete && (
           <ProgressBar current={currentIndex} total={questions.length} />

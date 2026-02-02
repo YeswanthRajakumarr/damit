@@ -5,16 +5,17 @@ import { TrendChart, TrendChartSkeleton, TimeRange } from "@/components/analytic
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ArrowLeft, BarChart3, Plus } from "lucide-react";
+import { ArrowLeft, BarChart3, Plus, Calendar as CalendarIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { UserMenu } from "@/components/UserMenu";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const Analytics = () => {
     const { data, isLoading: loadingLogs } = useDailyLogs();
@@ -30,20 +31,26 @@ const Analytics = () => {
     const hasLogs = logs.length > 0;
 
     return (
-        <div className="min-h-screen gradient-warm px-6 pt-8 pb-12 safe-bottom">
+        <div className="min-h-screen gradient-warm px-4 pt-6 pb-12 sm:px-6 sm:pt-8 safe-bottom">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <header className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link
-                            to="/app"
-                            className="p-2 rounded-xl bg-secondary/80 text-secondary-foreground hover:bg-secondary transition-all border border-border/50"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
-                            <p className="text-sm text-muted-foreground">Your progress over time</p>
+                <header className="mb-8">
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <Link
+                                to="/app"
+                                className="group p-2 rounded-xl bg-secondary/30 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all border border-border/40"
+                            >
+                                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                            </Link>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Analytics</h1>
+                                <p className="text-xs text-muted-foreground hidden sm:block">Your progress over time</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-secondary/30 p-1 rounded-xl border border-border/40">
+                            <ThemeToggle />
+                            <NotificationBell />
+                            <UserMenu />
                         </div>
                     </div>
                 </header>
@@ -94,13 +101,13 @@ const Analytics = () => {
                 ) : (
                     <div className="space-y-6">
                         <div className="flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border/50 w-fit">
+                            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border/50 w-fit overflow-x-auto no-scrollbar">
                                 {(['Day', 'Week', 'Month', 'Overall', 'Custom'] as TimeRange[]).map((range) => (
                                     <button
                                         key={range}
                                         onClick={() => setTimeRange(range)}
                                         className={cn(
-                                            "px-3 py-1 text-xs font-bold rounded-lg transition-all",
+                                            "px-3 py-1 text-xs font-bold rounded-lg transition-all whitespace-nowrap",
                                             timeRange === range
                                                 ? "bg-primary text-white shadow-sm"
                                                 : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -112,29 +119,28 @@ const Analytics = () => {
                             </div>
 
                             {timeRange === 'Custom' && (
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50">
+                                <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                                    <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50 overflow-hidden w-full max-w-xs sm:w-fit">
                                         <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant={"ghost"}
                                                     className={cn(
-                                                        "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                                                        "h-8 flex-1 sm:flex-none px-3 text-[10px] sm:text-xs font-semibold rounded-lg transition-all hover:bg-secondary truncate",
                                                         !startDate && "text-muted-foreground"
                                                     )}
                                                 >
-                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary shrink-0" />
                                                     {startDate ? format(startDate, "MMM d, y") : "Start Date"}
                                                 </Button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start">
+                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="center">
                                                 <Calendar
                                                     mode="single"
                                                     selected={startDate}
                                                     onSelect={(date) => {
                                                         setStartDate(date);
                                                         setIsStartOpen(false);
-                                                        // If end date is before start date, reset end date
                                                         if (date && endDate && endDate < date) {
                                                             setEndDate(undefined);
                                                         }
@@ -145,22 +151,22 @@ const Analytics = () => {
                                             </PopoverContent>
                                         </Popover>
 
-                                        <span className="text-muted-foreground text-xs font-bold">to</span>
+                                        <span className="text-muted-foreground text-[10px] font-bold px-1 opacity-50 uppercase">to</span>
 
                                         <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant={"ghost"}
                                                     className={cn(
-                                                        "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                                                        "h-8 flex-1 sm:flex-none px-3 text-[10px] sm:text-xs font-semibold rounded-lg transition-all hover:bg-secondary truncate",
                                                         !endDate && "text-muted-foreground"
                                                     )}
                                                 >
-                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary shrink-0" />
                                                     {endDate ? format(endDate, "MMM d, y") : "End Date"}
                                                 </Button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start">
+                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="center">
                                                 <Calendar
                                                     mode="single"
                                                     selected={endDate}

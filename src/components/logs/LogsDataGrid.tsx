@@ -151,16 +151,16 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                                 {sortedLogs.map((log) => (
                                     <TableHead
                                         key={log.id}
-                                        className="text-center min-w-[45px] sm:min-w-[85px] py-1 sm:py-2 bg-muted/20 cursor-pointer hover:bg-muted/40 transition-colors border-r border-border/10 last:border-r-0 px-1"
+                                        className="text-center min-w-[38px] sm:min-w-[85px] py-1 sm:py-2 bg-muted/10 cursor-pointer hover:bg-muted/30 transition-colors border-r border-border/10 last:border-r-0 px-0 sm:px-1"
                                         onClick={() => onLogClick(log)}
                                     >
                                         <div className="flex flex-col items-center gap-0">
-                                            <span className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-0.5">
+                                            <span className="text-[7px] sm:text-[10px] uppercase tracking-tighter sm:tracking-wider text-muted-foreground/60 font-bold leading-none mb-0.5">
                                                 {format(new Date(log.log_date), "EEE")}
                                             </span>
-                                            <span className="text-[10px] sm:text-sm font-bold text-foreground whitespace-nowrap leading-none">
+                                            <span className="text-[10px] sm:text-sm font-black text-foreground whitespace-nowrap leading-none">
                                                 {format(new Date(log.log_date), "d")}
-                                                <span className="hidden sm:inline"> {format(new Date(log.log_date), "MMM")}</span>
+                                                <span className="hidden sm:inline font-bold"> {format(new Date(log.log_date), "MMM")}</span>
                                             </span>
                                         </div>
                                     </TableHead>
@@ -187,7 +187,7 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                                         return (
                                             <TableCell
                                                 key={`${log.id}-${metric.key}`}
-                                                className="text-center py-1.5 sm:py-2 px-1 cursor-pointer border-r border-border/10 last:border-r-0"
+                                                className="text-center py-1 sm:py-2 px-0 sm:px-1 cursor-pointer border-r border-border/10 last:border-r-0"
                                                 onClick={() => onLogClick(log)}
                                             >
                                                 {metric.type === "status" ? (
