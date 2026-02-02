@@ -1,17 +1,30 @@
 import { useDailyLogs } from "@/hooks/useDailyLogs";
 import { useLogStats } from "@/hooks/useLogStats";
 import { StatsDashboard, StatsDashboardSkeleton } from "@/components/logs/StatsDashboard";
-import { TrendChart, TrendChartSkeleton } from "@/components/analytics/TrendChart";
+import { TrendChart, TrendChartSkeleton, TimeRange } from "@/components/analytics/TrendChart";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ArrowLeft, BarChart3, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { DateRange } from "react-day-picker";
 
 const Analytics = () => {
     const { data, isLoading: loadingLogs } = useDailyLogs();
+    const [timeRange, setTimeRange] = useState<TimeRange>('Week');
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+    const [customRange, setCustomRange] = useState<DateRange | undefined>({
+        from: new Date(new Date().setDate(new Date().getDate() - 7)),
+        to: new Date(),
+    });
+
     const logs = data?.logs || [];
-    const stats = useLogStats(logs);
     const hasLogs = logs.length > 0;
 
     return (
@@ -77,12 +90,83 @@ const Analytics = () => {
                         </Card>
                     </motion.div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border/50 w-fit">
+                                {(['Day', 'Week', 'Month', 'Overall', 'Custom'] as TimeRange[]).map((range) => (
+                                    <button
+                                        key={range}
+                                        onClick={() => setTimeRange(range)}
+                                        className={cn(
+                                            "px-3 py-1 text-xs font-bold rounded-lg transition-all",
+                                            timeRange === range
+                                                ? "bg-primary text-white shadow-sm"
+                                                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                                        )}
+                                    >
+                                        {range}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {timeRange === 'Custom' && (
+                                <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[280px] justify-start text-left font-normal bg-card/50 backdrop-blur-sm border-border/50 rounded-xl h-10 shadow-sm transition-all hover:bg-card/80",
+                                                !customRange && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
+                                            <span className="truncate">
+                                                {customRange?.from ? (
+                                                    customRange.to ? (
+                                                        <>
+                                                            {format(customRange.from, "LLL dd, y")} - {format(customRange.to, "LLL dd, y")}
+                                                        </>
+                                                    ) : (
+                                                        format(customRange.from, "LLL dd, y")
+                                                    )
+                                                ) : (
+                                                    <span>Pick a date range</span>
+                                                )}
+                                            </span>
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start" sideOffset={8}>
+                                        <Calendar
+                                            initialFocus
+                                            mode="range"
+                                            defaultMonth={customRange?.from}
+                                            selected={customRange}
+                                            onSelect={(range) => {
+                                                setCustomRange(range);
+                                                // Only close if both dates are selected
+                                                if (range?.from && range?.to) {
+                                                    // Optional: auto-close after 300ms for better UX
+                                                    setTimeout(() => setIsCalendarOpen(false), 300);
+                                                }
+                                            }}
+                                            numberOfMonths={1}
+                                            className="rounded-2xl"
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        </div>
+
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                         >
-                            <StatsDashboard logs={logs} />
+                            <StatsDashboard
+                                logs={logs}
+                                timeRange={timeRange}
+                                customRange={customRange as { from: Date; to: Date | undefined }}
+                            />
                         </motion.div>
 
                         <motion.div
@@ -90,7 +174,11 @@ const Analytics = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1 }}
                         >
-                            <TrendChart logs={logs} />
+                            <TrendChart
+                                logs={logs}
+                                timeRange={timeRange}
+                                customRange={customRange as { from: Date; to: Date | undefined }}
+                            />
                         </motion.div>
                     </div>
                 )}
