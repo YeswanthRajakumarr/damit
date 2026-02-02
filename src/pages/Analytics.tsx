@@ -14,15 +14,17 @@ import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { toast } from "sonner";
 
 const Analytics = () => {
     const { data, isLoading: loadingLogs } = useDailyLogs();
     const [timeRange, setTimeRange] = useState<TimeRange>('Week');
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-    const [customRange, setCustomRange] = useState<DateRange | undefined>({
-        from: new Date(new Date().setDate(new Date().getDate() - 7)),
-        to: new Date(),
-    });
+    const [startDate, setStartDate] = useState<Date | undefined>(new Date(new Date().setDate(new Date().getDate() - 7)));
+    const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+    const [isStartOpen, setIsStartOpen] = useState(false);
+    const [isEndOpen, setIsEndOpen] = useState(false);
+
+    const customRange = { from: startDate, to: endDate };
 
     const logs = data?.logs || [];
     const hasLogs = logs.length > 0;
@@ -110,51 +112,83 @@ const Analytics = () => {
                             </div>
 
                             {timeRange === 'Custom' && (
-                                <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            id="date"
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-[280px] justify-start text-left font-normal bg-card/50 backdrop-blur-sm border-border/50 rounded-xl h-10 shadow-sm transition-all hover:bg-card/80",
-                                                !customRange && "text-muted-foreground"
-                                            )}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
-                                            <span className="truncate">
-                                                {customRange?.from ? (
-                                                    customRange.to ? (
-                                                        <>
-                                                            {format(customRange.from, "LLL dd, y")} - {format(customRange.to, "LLL dd, y")}
-                                                        </>
-                                                    ) : (
-                                                        format(customRange.from, "LLL dd, y")
-                                                    )
-                                                ) : (
-                                                    <span>Pick a date range</span>
-                                                )}
-                                            </span>
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start" sideOffset={8}>
-                                        <Calendar
-                                            initialFocus
-                                            mode="range"
-                                            defaultMonth={customRange?.from}
-                                            selected={customRange}
-                                            onSelect={(range) => {
-                                                setCustomRange(range);
-                                                // Only close if both dates are selected
-                                                if (range?.from && range?.to) {
-                                                    // Optional: auto-close after 300ms for better UX
-                                                    setTimeout(() => setIsCalendarOpen(false), 300);
-                                                }
-                                            }}
-                                            numberOfMonths={1}
-                                            className="rounded-2xl"
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50">
+                                        <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    className={cn(
+                                                        "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                                                        !startDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                                                    {startDate ? format(startDate, "MMM d, y") : "Start Date"}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={startDate}
+                                                    onSelect={(date) => {
+                                                        setStartDate(date);
+                                                        setIsStartOpen(false);
+                                                        // If end date is before start date, reset end date
+                                                        if (date && endDate && endDate < date) {
+                                                            setEndDate(undefined);
+                                                        }
+                                                    }}
+                                                    initialFocus
+                                                    className="rounded-2xl"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+
+                                        <span className="text-muted-foreground text-xs font-bold">to</span>
+
+                                        <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    className={cn(
+                                                        "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                                                        !endDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                                                    {endDate ? format(endDate, "MMM d, y") : "End Date"}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={endDate}
+                                                    onSelect={(date) => {
+                                                        if (date && startDate) {
+                                                            const diffTime = Math.abs(date.getTime() - startDate.getTime());
+                                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                            if (diffDays > 30) {
+                                                                toast.error("Maximum range is 30 days");
+                                                                return;
+                                                            }
+                                                        }
+                                                        setEndDate(date);
+                                                        setIsEndOpen(false);
+                                                    }}
+                                                    disabled={(date) => !!startDate && date < startDate}
+                                                    initialFocus
+                                                    className="rounded-2xl"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                    {!startDate || !endDate ? (
+                                        <span className="text-[10px] text-destructive font-bold animate-pulse">
+                                            Dates required
+                                        </span>
+                                    ) : null}
+                                </div>
                             )}
                         </div>
 

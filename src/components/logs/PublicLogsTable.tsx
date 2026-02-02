@@ -21,10 +21,10 @@ type SortOrder = "asc" | "desc";
 
 const formatValue = (value: number | null): string => {
     if (value === null) return "-";
-    if (value >= 1) return "✓";
-    if (value >= 0.5) return "½";
-    if (value >= 0 || value === 0.25) return "○";
-    return "✗";
+    if (value >= 1) return "Excellent";
+    if (value >= 0.5) return "Good";
+    if (value >= 0 || value === 0.25) return "Fair";
+    return "Poor";
 };
 
 const getValueColor = (value: number | null): string => {

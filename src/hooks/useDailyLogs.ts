@@ -21,9 +21,11 @@ export interface DailyLog {
   updated_at: string;
 }
 
-export const useDailyLogs = (page?: number, pageSize?: number) => {
+import { DateRange } from "react-day-picker";
+
+export const useDailyLogs = (page?: number, pageSize?: number, dateRange?: DateRange) => {
   return useQuery({
-    queryKey: ["daily-logs", page, pageSize],
+    queryKey: ["daily-logs", page, pageSize, dateRange],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -33,6 +35,13 @@ export const useDailyLogs = (page?: number, pageSize?: number) => {
         .select("*", { count: "exact" })
         .eq("user_id", user.id)
         .order("log_date", { ascending: false });
+
+      if (dateRange?.from) {
+        query = query.gte("log_date", formatDateLocal(dateRange.from));
+      }
+      if (dateRange?.to) {
+        query = query.lte("log_date", formatDateLocal(dateRange.to));
+      }
 
       if (page !== undefined && pageSize !== undefined) {
         const from = page * pageSize;

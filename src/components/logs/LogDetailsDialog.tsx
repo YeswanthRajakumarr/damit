@@ -15,10 +15,10 @@ interface LogDetailsDialogProps {
 
 const formatValue = (value: number | null): string => {
     if (value === null) return "-";
-    if (value >= 1) return "✓";
-    if (value >= 0.5) return "½";
-    if (value >= 0 || value === 0.25) return "○";
-    return "✗";
+    if (value >= 1) return "Excellent";
+    if (value >= 0.5) return "Good";
+    if (value >= 0 || value === 0.25) return "Fair";
+    return "Poor";
 };
 
 const getValueColor = (value: number | null): string => {
@@ -57,15 +57,15 @@ export function LogDetailsDialog({ selectedLog, onClose }: LogDetailsDialogProps
                                     { label: "Stress", val: selectedLog.stress_fatigue, icon: Activity },
                                     { label: "Workout", val: selectedLog.workout, icon: Heart },
                                     { label: "Water", val: selectedLog.water_intake, icon: Activity },
-                                    { label: "Mindset", val: selectedLog.proud_of_yourself, icon: Heart }
+                                    { label: "Are you proud?", val: selectedLog.proud_of_yourself, icon: Heart }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="bg-card/50 p-3 rounded-2xl border border-border/50 text-center">
-                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                                    <div key={idx} className="bg-card/50 p-2.5 rounded-2xl border border-border/50 text-center">
+                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 leading-tight">
                                             {item.label}
                                         </p>
-                                        <p className={`text-lg font-bold ${getValueColor(Number(item.val))}`}>
-                                            {item.label === "Mindset"
-                                                ? (String(item.val).toLowerCase().includes('yes') ? '✓' : '✗')
+                                        <p className={`text-[11px] font-bold ${getValueColor(Number(item.val))}`}>
+                                            {item.label === "Are you proud?"
+                                                ? (["1", "yes", "true", "yeah"].includes(String(item.val).toLowerCase()) ? 'Yes' : 'No')
                                                 : formatValue(Number(item.val))}
                                         </p>
                                     </div>

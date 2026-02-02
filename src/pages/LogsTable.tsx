@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useDailyLogs, DailyLog, useDeleteLog } from "@/hooks/useDailyLogs";
-import { ArrowLeft, Trash2, Calendar, TrendingUp, Filter, BarChart3 } from "lucide-react";
+import { ArrowLeft, Trash2, Calendar as CalendarIcon, TrendingUp, Filter, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
 import { format, parseISO } from "date-fns";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
 
 import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
@@ -15,7 +20,13 @@ import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
 const LogsTable = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
-  const { data, isLoading, error } = useDailyLogs(currentPage, pageSize);
+  const [isStartOpen, setIsStartOpen] = useState(false);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
+  const dateRange = startDate && endDate ? { from: startDate, to: endDate } : undefined;
+  const { data, isLoading, error } = useDailyLogs(currentPage, pageSize, dateRange);
   const logs = data?.logs;
   const totalCount = data?.totalCount || 0;
   const [selectedLog, setSelectedLog] = useState<DailyLog | null>(null);
@@ -73,33 +84,124 @@ const LogsTable = () => {
         animate={{ opacity: 1, y: 0 }}
         className="px-6 pt-8 pb-4"
       >
-        <div className="flex items-center justify-between mb-6">
-          <Link
-            to="/app"
-            className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="hidden sm:inline">Back</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-            <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
-          </div>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-6">
+          <div className="flex items-center justify-between w-full lg:w-auto gap-4">
             <Link
-              to="/analytics"
-              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-              aria-label="Analytics"
-              title="Analytics"
+              to="/app"
+              className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
             >
-              <BarChart3 className="w-5 h-5 text-foreground" />
+              <ArrowLeft className="w-5 h-5" />
+              <span className="hidden sm:inline">Back</span>
             </Link>
-            <ThemeToggle />
-            <UserMenu />
+
+            <div className="flex items-center gap-2">
+              <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
+              <h1 className="text-xl font-bold text-foreground">DAMit!</h1>
+            </div>
+
+            <div className="lg:hidden flex items-center gap-2">
+              <Link
+                to="/analytics"
+                className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                aria-label="Analytics"
+                title="Analytics"
+              >
+                <BarChart3 className="w-5 h-5 text-foreground" />
+              </Link>
+              <ThemeToggle />
+              <UserMenu />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex items-center gap-2 bg-secondary/30 p-1 rounded-xl border border-border/50">
+              <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    className={cn(
+                      "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                    {startDate ? format(startDate, "MMM d, y") : "Start Date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => {
+                      setStartDate(date);
+                      setIsStartOpen(false);
+                      setCurrentPage(0);
+                      if (date && endDate && endDate < date) {
+                        setEndDate(undefined);
+                      }
+                    }}
+                    initialFocus
+                    className="rounded-2xl"
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <span className="text-muted-foreground text-xs font-bold">to</span>
+
+              <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    className={cn(
+                      "h-8 px-3 text-xs font-semibold rounded-lg transition-all hover:bg-secondary",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-3 w-3 text-primary" />
+                    {endDate ? format(endDate, "MMM d, y") : "End Date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 rounded-2xl border-border/50 shadow-xl" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={(date) => {
+                      if (date && startDate) {
+                        const diffTime = Math.abs(date.getTime() - startDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays > 30) {
+                          toast.error("Maximum range is 30 days");
+                          return;
+                        }
+                        // Adjust page size to fit the entire range
+                        setPageSize(diffDays + 1);
+                      }
+                      setEndDate(date);
+                      setIsEndOpen(false);
+                      setCurrentPage(0);
+                    }}
+                    disabled={(date) => !!startDate && date < startDate}
+                    initialFocus
+                    className="rounded-2xl"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="hidden lg:flex items-center gap-2">
+              <Link
+                to="/analytics"
+                className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                aria-label="Analytics"
+                title="Analytics"
+              >
+                <BarChart3 className="w-5 h-5 text-foreground" />
+              </Link>
+              <ThemeToggle />
+              <UserMenu />
+            </div>
           </div>
         </div>
-
-
       </motion.header>
 
       {/* Main Content */}
@@ -109,20 +211,28 @@ const LogsTable = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 text-sm"
+          className="flex flex-wrap justify-center gap-6 py-2 px-4 bg-card/40 backdrop-blur-sm rounded-xl border border-border/50 w-fit mx-auto text-xs"
         >
-          <span className="flex items-center gap-1">
-            <span className="text-primary font-bold">✓</span> Excellent/Nill
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-success font-bold">½</span> Good/Low
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-warning font-bold">○</span> Fair/High
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-destructive font-bold">✗</span> Poor/Very High
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" />
+            <span className="text-muted-foreground font-medium">Excellent / Nill</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-success opacity-80" />
+            <span className="text-muted-foreground font-medium">Good / Low</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-warning opacity-60" />
+            <span className="text-muted-foreground font-medium">Fair / High</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <motion.div
+              animate={{ opacity: [1, 0.4, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-2.5 h-2.5 rounded-full bg-destructive shadow-[0_0_8px_shadow-destructive/40]"
+            />
+            <span className="text-muted-foreground font-medium">Poor / Very High</span>
+          </div>
         </motion.div>
 
         <LogsDataGrid
