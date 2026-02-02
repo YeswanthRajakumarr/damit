@@ -100,16 +100,13 @@ export const ImageUpload = ({ onImageSelect, existingImageUrl }: ImageUploadProp
                             variant="outline"
                             type="button"
                             className={cn(
-                                "w-full h-32 border-dashed border-2 rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground",
+                                "w-full h-14 border-dashed border-2 rounded-xl flex flex-row items-center justify-center gap-2 text-muted-foreground",
                                 "hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
                             )}
                             onClick={() => fileInputRef.current?.click()}
                         >
-                            <div className="p-3 rounded-full bg-secondary/50">
-                                <Camera className="w-6 h-6" />
-                            </div>
-                            <span className="text-sm font-medium">Add a photo of your day (Optional)</span>
-                            <span className="text-[10px] opacity-60">Max size 5MB</span>
+                            <Camera className="w-4 h-4" />
+                            <span className="text-sm font-medium">Add optional photo (Max 5MB)</span>
                         </Button>
                     </motion.div>
                 )}
