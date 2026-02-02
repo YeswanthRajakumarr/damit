@@ -4,7 +4,7 @@ import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User } from "lucide-r
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
-import { NotificationSettings } from "@/components/NotificationSettings";
+
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { useEmojiAvatar } from "@/hooks/useEmojiAvatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -126,7 +126,6 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <NotificationSettings />
             </main>
         </div>
     );
