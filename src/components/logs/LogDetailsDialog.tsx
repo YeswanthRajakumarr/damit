@@ -90,14 +90,25 @@ export function LogDetailsDialog({ selectedLog, onClose }: LogDetailsDialogProps
                                 )}
                             </div>
 
-                            {/* Good Thing Quote */}
-                            <div className="bg-primary/5 rounded-2xl p-6 relative border border-primary/10">
-                                <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/10" />
-                                <div className="relative z-10">
-                                    <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">One Good Thing</p>
-                                    <p className="text-foreground leading-relaxed italic font-serif text-lg">
-                                        "{selectedLog.good_thing || "Today was a day of focus and growth."}"
-                                    </p>
+                            {/* Good Thing Quote & Image */}
+                            <div className="bg-primary/5 rounded-2xl overflow-hidden border border-primary/10">
+                                {selectedLog.photo_url && (
+                                    <div className="w-full aspect-video border-b border-primary/10">
+                                        <img
+                                            src={selectedLog.photo_url}
+                                            alt="Daily moment"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <div className="p-6 relative">
+                                    <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/10" />
+                                    <div className="relative z-10">
+                                        <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">One Good Thing</p>
+                                        <p className="text-foreground leading-relaxed italic font-serif text-lg">
+                                            "{selectedLog.good_thing || "Today was a day of focus and growth."}"
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

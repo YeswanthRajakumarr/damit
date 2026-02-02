@@ -17,6 +17,7 @@ export interface DailyLog {
   good_thing: string | null;
   step_count: number | null;
   proud_of_yourself: string | null;
+  photo_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -85,17 +86,37 @@ export const useCheckExistingLog = (date: Date) => {
 interface SaveDailyLogParams {
   answers: Record<number, string | number | null>;
   selectedDate: Date;
+  imageFile?: File | null;
 }
 
 export const useSaveDailyLog = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ answers, selectedDate }: SaveDailyLogParams) => {
+    mutationFn: async ({ answers, selectedDate, imageFile }: SaveDailyLogParams) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
       const logDate = formatDateLocal(selectedDate);
+      let photoUrl = (answers as any).photo_url || null;
+
+      // Upload image if provided
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${user.id}/${logDate}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('log-photos')
+          .upload(fileName, imageFile, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('log-photos')
+          .getPublicUrl(fileName);
+
+        photoUrl = publicUrl;
+      }
 
       const logData = {
         user_id: user.id,
@@ -112,6 +133,7 @@ export const useSaveDailyLog = () => {
         good_thing: answers[10] as string | null,
         step_count: answers[11] ? Number(answers[11]) : null,
         proud_of_yourself: answers[12] === 1 ? "Yes" : answers[12] === 0 ? "No" : answers[12] as string | null,
+        photo_url: photoUrl,
       };
 
       // Upsert - update if exists for today, otherwise insert

@@ -4,7 +4,6 @@ import { questions } from "@/data/questions";
 import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
-import { InstallPrompt } from "./InstallPrompt";
 import { Table2, CalendarIcon, AlertTriangle, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -26,6 +25,7 @@ export const DAMForm = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Check if we were passed a date via navigation state
@@ -71,6 +71,7 @@ export const DAMForm = () => {
     setIsComplete(false);
     setDirection(0);
     setSelectedDate(new Date());
+    setImageFile(null);
   }, []);
 
   return (
@@ -193,7 +194,7 @@ export const DAMForm = () => {
         <div className="w-full max-w-md mx-auto">
           <AnimatePresence mode="wait">
             {isComplete ? (
-              <ResultsView answers={answers} onReset={handleReset} selectedDate={selectedDate} />
+              <ResultsView answers={answers} onReset={handleReset} selectedDate={selectedDate} imageFile={imageFile} />
             ) : (
               <QuestionCard
                 key={currentQuestion.id}
@@ -205,6 +206,8 @@ export const DAMForm = () => {
                 isFirst={currentIndex === 0}
                 isLast={currentIndex === questions.length - 1}
                 direction={direction}
+                onImageSelect={currentQuestion.id === 10 ? setImageFile : undefined}
+                existingImageUrl={currentQuestion.id === 10 && existingLog ? (existingLog as any).photo_url : null}
               />
             )}
           </AnimatePresence>
@@ -218,8 +221,6 @@ export const DAMForm = () => {
         </p>
       </footer>
 
-      {/* Install Prompt */}
-      <InstallPrompt />
     </div>
   );
 };

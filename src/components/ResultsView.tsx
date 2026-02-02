@@ -12,9 +12,10 @@ interface ResultsViewProps {
   answers: Record<number, string | number | null>;
   onReset: () => void;
   selectedDate: Date;
+  imageFile?: File | null;
 }
 
-export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps) => {
+export const ResultsView = ({ answers, onReset, selectedDate, imageFile }: ResultsViewProps) => {
   const [copied, setCopied] = useState(false);
   const saveMutation = useSaveDailyLog();
   const [saved, setSaved] = useState(false);
@@ -22,7 +23,7 @@ export const ResultsView = ({ answers, onReset, selectedDate }: ResultsViewProps
   // Save to database when component mounts
   useEffect(() => {
     if (!saved) {
-      saveMutation.mutate({ answers, selectedDate }, {
+      saveMutation.mutate({ answers, selectedDate, imageFile }, {
         onSuccess: () => {
           setSaved(true);
           toast.success("DAMit! saved to database!");

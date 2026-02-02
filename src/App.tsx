@@ -10,6 +10,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { setupNotificationHandlers } from "@/utils/notificationServiceWorker";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 // Lazy load pages
 const Index = lazy(() => import("./pages/Index"));
@@ -117,6 +118,7 @@ const App = () => {
                   </Routes>
                 </Suspense>
               </BrowserRouter>
+              <InstallPrompt />
             </TooltipProvider>
           </AuthProvider>
         </ThemeProvider>

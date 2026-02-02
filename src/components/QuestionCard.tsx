@@ -3,6 +3,7 @@ import { Question, questions } from "@/data/questions";
 import { RatingSelector } from "./RatingSelector";
 import { TextInput } from "./TextInput";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageUpload } from "./ImageUpload";
 
 interface QuestionCardProps {
   question: Question;
@@ -13,6 +14,8 @@ interface QuestionCardProps {
   isFirst: boolean;
   isLast: boolean;
   direction: number;
+  onImageSelect?: (file: File | null) => void;
+  existingImageUrl?: string | null;
 }
 
 const variants = {
@@ -39,6 +42,8 @@ export const QuestionCard = ({
   isFirst,
   isLast,
   direction,
+  onImageSelect,
+  existingImageUrl,
 }: QuestionCardProps) => {
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 50;
@@ -134,6 +139,12 @@ export const QuestionCard = ({
                 onChange={onAnswer}
                 placeholder={question.placeholder}
                 type="number"
+              />
+            )}
+            {question.id === 10 && onImageSelect && (
+              <ImageUpload
+                onImageSelect={onImageSelect}
+                existingImageUrl={existingImageUrl}
               />
             )}
           </div>
