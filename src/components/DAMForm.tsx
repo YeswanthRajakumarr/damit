@@ -4,7 +4,7 @@ import { questions } from "@/data/questions";
 import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
-import { Table2, CalendarIcon, AlertTriangle, BarChart3 } from "lucide-react";
+import { Table2, CalendarIcon, AlertTriangle, BarChart3, Heart } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -101,6 +101,14 @@ export const DAMForm = () => {
               title="Analytics"
             >
               <BarChart3 className="w-5 h-5 text-foreground" />
+            </Link>
+            <Link
+              to="/gratitude"
+              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors group"
+              aria-label="Gratitude Wall"
+              title="Gratitude Wall"
+            >
+              <Heart className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
             </Link>
             <ThemeToggle />
             <NotificationBell />
@@ -211,8 +219,8 @@ export const DAMForm = () => {
                 isFirst={currentIndex === 0}
                 isLast={currentIndex === questions.length - 1}
                 direction={direction}
-                onImageSelect={currentQuestion.id === 10 ? setImageFile : undefined}
-                existingImageUrl={currentQuestion.id === 10 && existingLog ? (existingLog as any).photo_url : null}
+                onImageSelect={currentQuestion.id === 11 ? setImageFile : undefined}
+                existingImageUrl={currentQuestion.id === 11 && existingLog ? (existingLog as any).photo_url : null}
               />
             )}
           </AnimatePresence>
