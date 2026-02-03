@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut, Camera, Smile } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
-import { ImageUpload } from "@/components/ImageUpload";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { useProfileAvatar } from "@/hooks/useProfileAvatar";
@@ -20,6 +20,18 @@ export default function Profile() {
     const { emoji, updateEmoji, avatarUrl, uploadAvatar, removeAvatar, isUploading } = useProfileAvatar();
     const [copied, setCopied] = useState(false);
     const [cropImage, setCropImage] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                setCropImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleShare = async () => {
         if (!user) return;
@@ -51,7 +63,7 @@ export default function Profile() {
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="px-6 pt-8 pb-4"
+                className="px-6 pt-6 pb-2"
             >
                 <div className="flex items-center justify-between mb-6">
                     <Link
@@ -83,7 +95,7 @@ export default function Profile() {
             </motion.header>
 
             {/* Main Content */}
-            <main className="px-6 pb-8 space-y-6">
+            <main className="px-6 pb-8 space-y-4">
                 <Card className="border-border/50">
                     <CardHeader>
                         <div className="flex items-center gap-3">
@@ -93,75 +105,76 @@ export default function Profile() {
                             <div>
                                 <CardTitle>Profile Avatar</CardTitle>
                                 <CardDescription>
-                                    Choose an emoji or upload a photo
+                                    Customize your appearance
                                 </CardDescription>
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        <Tabs defaultValue={avatarUrl ? "image" : "emoji"} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 mb-6">
-                                <TabsTrigger value="emoji">Emoji</TabsTrigger>
-                                <TabsTrigger value="image">Photo</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="emoji" className="space-y-4">
-                                <div className="flex flex-col items-center gap-4 py-4">
-                                    <Avatar className="h-24 w-24 border-2 border-border shadow-soft">
-                                        <AvatarFallback className="bg-secondary/50 text-4xl">
-                                            {emoji || user?.email?.[0].toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <p className="text-sm text-muted-foreground text-center">
-                                        Select an emoji from below to use as your avatar
-                                    </p>
-                                </div>
-                                <EmojiPicker value={emoji} onChange={(newEmoji) => {
-                                    updateEmoji(newEmoji);
-                                    if (avatarUrl) {
-                                        removeAvatar();
-                                    }
-                                    toast.success("Avatar updated!");
-                                }} />
-                            </TabsContent>
-                            <TabsContent value="image" className="space-y-4">
-                                <div className="flex flex-col items-center gap-4 py-4">
-                                    <Avatar className="h-24 w-24 border-2 border-border shadow-soft">
-                                        <AvatarImage src={avatarUrl || ""} className="object-cover" />
-                                        <AvatarFallback className="bg-secondary/50 text-4xl">
-                                            {user?.email?.[0].toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className="w-full max-w-sm">
-                                        <ImageUpload
-                                            onImageSelect={(file) => {
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onload = () => {
-                                                        setCropImage(reader.result as string);
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                } else {
-                                                    // Handle removal via ImageUpload component if it supports it
-                                                    // But ImageUpload usually just selects file. 
-                                                    // We might need a button to remove existing image if we are in this tab
-                                                    removeAvatar();
-                                                }
-                                            }}
-                                            existingImageUrl={avatarUrl}
-                                        />
-                                        {isUploading && (
-                                            <p className="text-sm text-center text-muted-foreground mt-2 animate-pulse">
-                                                Uploading...
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
+                    <CardContent className="flex flex-col items-center pb-6">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                        />
+
+                        <div className="relative mb-6">
+                            <Avatar className="h-32 w-32 border-4 border-background shadow-soft ring-2 ring-border/20">
+                                <AvatarImage src={avatarUrl || ""} className="object-cover" />
+                                <AvatarFallback className="bg-secondary/50 text-5xl">
+                                    {emoji || user?.email?.[0].toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="outline"
+                                className="gap-2"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <Camera className="w-4 h-4" />
+                                {avatarUrl ? "Change Photo" : "Upload Photo"}
+                            </Button>
+
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" className="gap-2">
+                                        <Smile className="w-4 h-4" />
+                                        Choose Emoji
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0 border-none shadow-none bg-transparent">
+                                    <EmojiPicker
+                                        value={emoji}
+                                        onChange={(newEmoji) => {
+                                            updateEmoji(newEmoji);
+                                            // Optional: If we want emoji to override photo immediately, we'd need to clear avatarUrl here.
+                                            // But currently the logic is Photo > Emoji.
+                                            // To switch back to Emoji, user needs to remove photo? 
+                                            // Or do we want setting emoji to clear photo?
+                                            // Let's stick to current logic: Photo takes precedence.
+                                            if (avatarUrl) {
+                                                // If they explicitly pick an emoji, they probably want to see it
+                                                removeAvatar();
+                                            }
+                                            toast.success("Emoji updated!");
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+
+                        {isUploading && (
+                            <p className="text-sm text-center text-muted-foreground mt-4 animate-pulse">
+                                Uploading new avatar...
+                            </p>
+                        )}
                     </CardContent>
                 </Card>
 
-                <div className="p-8 rounded-3xl bg-card border border-border/50 shadow-soft backdrop-blur-sm relative overflow-hidden group">
+                <div className="p-6 rounded-3xl bg-card border border-border/50 shadow-soft backdrop-blur-sm relative overflow-hidden group">
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="p-2 rounded-xl bg-primary/10 text-primary">
@@ -170,7 +183,7 @@ export default function Profile() {
                             <h3 className="text-xl font-bold text-foreground">Share Your Dashboard</h3>
                         </div>
 
-                        <p className="text-muted-foreground mb-8 max-w-md">
+                        <p className="text-muted-foreground mb-4 max-w-md">
                             Copy your permanent public link to share your analytics and health trends with friends, coaches, or your community.
                         </p>
 
@@ -191,7 +204,7 @@ export default function Profile() {
                     </div>
 
                     <div className="absolute -bottom-12 -right-12 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Share2 className="w-48 h-48 text-primary" />
+                        <Share2 className="w-32 h-32 text-primary" />
                     </div>
                 </div>
 
