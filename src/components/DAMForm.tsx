@@ -219,8 +219,8 @@ export const DAMForm = () => {
                 isFirst={currentIndex === 0}
                 isLast={currentIndex === questions.length - 1}
                 direction={direction}
-                onImageSelect={currentQuestion.id === 11 ? setImageFile : undefined}
-                existingImageUrl={currentQuestion.id === 11 && existingLog ? (existingLog as any).photo_url : null}
+                onImageSelect={currentQuestion.allowImageUpload ? setImageFile : undefined}
+                existingImageUrl={currentQuestion.allowImageUpload && existingLog ? (existingLog as any).photo_url : null}
               />
             )}
           </AnimatePresence>

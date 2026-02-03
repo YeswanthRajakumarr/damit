@@ -27,6 +27,7 @@ export interface Question {
   options?: RatingOption[];
   placeholder?: string;
   icon?: LucideIcon;
+  allowImageUpload?: boolean;
 }
 
 export const questions: Question[] = [
@@ -142,6 +143,7 @@ export const questions: Question[] = [
     type: "text",
     icon: Heart,
     placeholder: "Share something positive...",
+    allowImageUpload: true,
   },
   {
     id: 11,

@@ -141,7 +141,7 @@ export const QuestionCard = ({
                 type="number"
               />
             )}
-            {question.id === 10 && onImageSelect && (
+            {question.allowImageUpload && onImageSelect && (
               <ImageUpload
                 onImageSelect={onImageSelect}
                 existingImageUrl={existingImageUrl}
