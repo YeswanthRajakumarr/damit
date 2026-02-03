@@ -2,13 +2,12 @@ import { useDailyLogs } from "@/hooks/useDailyLogs";
 import { subDays, startOfToday, format, isSameDay } from "date-fns";
 import { formatDateLocal } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar as CalendarIcon, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
+import { Calendar as CalendarIcon, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useMemo } from "react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserMenu } from "@/components/UserMenu";
+import { NavBar } from "@/components/NavBar";
 
 const Notifications = () => {
     const { data, isLoading } = useDailyLogs();
@@ -36,22 +35,11 @@ const Notifications = () => {
     return (
         <div className="min-h-screen gradient-warm px-6 pt-8 pb-12 safe-bottom">
             <div className="max-w-2xl mx-auto">
-                <header className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link
-                            to="/app"
-                            className="p-2 rounded-xl bg-secondary/80 text-secondary-foreground hover:bg-secondary transition-all border border-border/50"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
-                            <p className="text-sm text-muted-foreground">Keep your streak alive</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <ThemeToggle />
-                        <UserMenu />
+                <header className="mb-8">
+                    <NavBar backLink={{ to: "/app", label: "Back" }} />
+                    <div className="mt-4">
+                        <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
+                        <p className="text-sm text-muted-foreground">Keep your streak alive</p>
                     </div>
                 </header>
 

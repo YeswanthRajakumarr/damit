@@ -4,19 +4,17 @@ import { questions } from "@/data/questions";
 import { QuestionCard } from "./QuestionCard";
 import { ProgressBar } from "./ProgressBar";
 import { ResultsView } from "./ResultsView";
-import { Table2, CalendarIcon, AlertTriangle, BarChart3, Heart } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { AlertTriangle, CalendarIcon } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { format, subDays, startOfToday, isSameDay, parseISO } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "./ThemeToggle";
-import { UserMenu } from "./UserMenu";
 import { useCheckExistingLog } from "@/hooks/useDailyLogs";
 import { useEffect } from "react";
-import { NotificationBell } from "./NotificationBell";
+import { NavBar } from "./NavBar";
 
 export const DAMForm = () => {
   const location = useLocation();
@@ -87,45 +85,7 @@ export const DAMForm = () => {
         animate={{ opacity: 1, y: 0 }}
         className="px-6 pt-8 pb-4"
       >
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-            <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
-          </div>
-
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <Link
-              to="/analytics"
-              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-              aria-label="Analytics"
-              title="Analytics"
-            >
-              <BarChart3 className="w-5 h-5 text-foreground" />
-            </Link>
-            <Link
-              to="/gratitude"
-              className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors group"
-              aria-label="Gratitude Wall"
-              title="Gratitude Wall"
-            >
-              <Heart className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
-            </Link>
-            <ThemeToggle />
-            <NotificationBell />
-            <Link
-              to="/logs"
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-sm font-medium
-                         bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all 
-                         shadow-soft border border-border/50"
-              data-testid="nav-logs"
-              title="Past DAMs"
-            >
-              <Table2 className="w-5 h-5" />
-              <span className="hidden lg:inline">Past DAMs</span>
-            </Link>
-            <UserMenu />
-          </div>
-        </div>
+        <NavBar />
 
         {/* Date Picker */}
         {!isComplete && (

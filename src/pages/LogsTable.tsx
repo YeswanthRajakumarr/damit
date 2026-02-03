@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useDailyLogs, DailyLog, useDeleteLog } from "@/hooks/useDailyLogs";
-import { ArrowLeft, Trash2, Calendar as CalendarIcon, TrendingUp, Filter, BarChart3 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserMenu } from "@/components/UserMenu";
+import { Trash2, Calendar as CalendarIcon, Filter } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,10 +10,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
-
+import { NavBar } from "@/components/NavBar";
 import { LogsDataGrid } from "@/components/logs/LogsDataGrid";
 import { LogDetailsDialog } from "@/components/logs/LogDetailsDialog";
-import { NotificationBell } from "@/components/NotificationBell";
 
 const LogsTable = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -87,33 +83,7 @@ const LogsTable = () => {
       >
         <div className="flex flex-col gap-4 mb-6">
           {/* Top Row: Navigation & App Branding */}
-          <div className="flex items-center justify-between gap-4">
-            <Link
-              to="/app"
-              className="group flex items-center gap-2 p-1.5 rounded-xl text-muted-foreground hover:text-foreground transition-all"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-              <span className="hidden sm:inline font-medium">Back</span>
-            </Link>
-
-            <div className="flex items-center gap-2.5">
-              <img src="/favicon.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-soft" />
-              <h1 className="text-lg font-black tracking-tighter text-foreground">DAMit!</h1>
-            </div>
-
-            <div className="flex items-center gap-1.5 bg-secondary/30 p-1 rounded-xl border border-border/40">
-              <Link
-                to="/analytics"
-                className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
-                aria-label="Analytics"
-              >
-                <BarChart3 className="w-4 h-4" />
-              </Link>
-              <ThemeToggle />
-              <NotificationBell />
-              <UserMenu />
-            </div>
-          </div>
+          <NavBar hidePastDAMs backLink={{ to: "/app", label: "Back" }} />
 
           {/* Bottom Row: Controls/Filters */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

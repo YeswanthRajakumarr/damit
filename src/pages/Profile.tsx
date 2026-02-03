@@ -1,13 +1,10 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
-    ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut, Camera, Smile, Loader2,
+    User, LogOut, Camera, Smile, Loader2, Share2, Copy, Check, Globe,
     Target, TrendingUp, Trash2, Edit, Footprints, Moon, Dumbbell, GlassWater, Utensils,
     Heart, Zap, Brain, Apple, Bike, Timer, Flame, Activity, Trophy, Coffee, Book, Sparkles, Sun
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserMenu } from "@/components/UserMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -20,6 +17,7 @@ import { toast } from "sonner";
 import { ImageCropper } from "@/components/ImageCropper";
 import { GoalDialog } from "@/components/GoalDialog";
 import { useGoals, useCreateGoal, useUpdateGoal, useDeleteGoal, Goal } from "@/hooks/useGoals";
+import { NavBar } from "@/components/NavBar";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -162,33 +160,9 @@ export default function Profile() {
                 animate={{ opacity: 1, y: 0 }}
                 className="px-6 pt-6 pb-2"
             >
-                <div className="flex items-center justify-between mb-6">
-                    <Link
-                        to="/app"
-                        className="flex items-center gap-2 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        <span className="hidden sm:inline">Back</span>
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <img src="/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl" />
-                        <h1 className="text-xl font-bold text-foreground hidden sm:inline">DAMit!</h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Link
-                            to="/app/analytics"
-                            className="p-2 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-                            aria-label="Analytics"
-                            title="Analytics"
-                        >
-                            <BarChart3 className="w-5 h-5 text-foreground" />
-                        </Link>
-                        <ThemeToggle />
-                        <UserMenu />
-                    </div>
-                </div>
+                <NavBar backLink={{ to: "/app", label: "Back" }} />
 
-                <h2 className="text-2xl font-bold text-foreground px-2 mb-6">Profile</h2>
+                <h2 className="text-2xl font-bold text-foreground px-2 mb-6 mt-4">Profile</h2>
             </motion.header>
 
             {/* Main Content */}

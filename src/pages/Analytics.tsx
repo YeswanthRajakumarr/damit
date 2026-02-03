@@ -5,7 +5,7 @@ import { TrendChart, TrendChartSkeleton, TimeRange } from "@/components/analytic
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ArrowLeft, BarChart3, Plus, Calendar as CalendarIcon } from "lucide-react";
+import { BarChart3, Plus, Calendar as CalendarIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserMenu } from "@/components/UserMenu";
-import { NotificationBell } from "@/components/NotificationBell";
+import { NavBar } from "@/components/NavBar";
 
 const Analytics = () => {
     const { data, isLoading: loadingLogs } = useDailyLogs();
@@ -34,24 +32,10 @@ const Analytics = () => {
         <div className="min-h-screen gradient-warm px-4 pt-6 pb-12 sm:px-6 sm:pt-8 safe-bottom">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-8">
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <Link
-                                to="/app"
-                                className="group p-2 rounded-xl bg-secondary/30 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all border border-border/40"
-                            >
-                                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-                            </Link>
-                            <div>
-                                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Analytics</h1>
-                                <p className="text-xs text-muted-foreground hidden sm:block">Your progress over time</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-secondary/30 p-1 rounded-xl border border-border/40">
-                            <ThemeToggle />
-                            <NotificationBell />
-                            <UserMenu />
-                        </div>
+                    <NavBar hideAnalytics backLink={{ to: "/app", label: "Back" }} />
+                    <div className="mt-4">
+                        <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Analytics</h1>
+                        <p className="text-xs text-muted-foreground hidden sm:block">Your progress over time</p>
                     </div>
                 </header>
 
