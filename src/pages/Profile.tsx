@@ -4,17 +4,22 @@ import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut } from "
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
+import { ImageUpload } from "@/components/ImageUpload";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { EmojiPicker } from "@/components/EmojiPicker";
-import { useEmojiAvatar } from "@/hooks/useEmojiAvatar";
+import { useProfileAvatar } from "@/hooks/useProfileAvatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { ImageCropper } from "@/components/ImageCropper";
 
 export default function Profile() {
     const { user, signOut } = useAuthContext();
-    const { emoji, updateEmoji } = useEmojiAvatar();
+    const { emoji, updateEmoji, avatarUrl, uploadAvatar, removeAvatar, isUploading } = useProfileAvatar();
     const [copied, setCopied] = useState(false);
+    const [cropImage, setCropImage] = useState<string | null>(null);
 
     const handleShare = async () => {
         if (!user) return;
@@ -86,18 +91,73 @@ export default function Profile() {
                                 <User className="w-6 h-6" />
                             </div>
                             <div>
-                                <CardTitle>Avatar</CardTitle>
+                                <CardTitle>Profile Avatar</CardTitle>
                                 <CardDescription>
-                                    Choose an emoji to represent yourself
+                                    Choose an emoji or upload a photo
                                 </CardDescription>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <EmojiPicker value={emoji} onChange={(newEmoji) => {
-                            updateEmoji(newEmoji);
-                            toast.success("Avatar updated!");
-                        }} />
+                        <Tabs defaultValue={avatarUrl ? "image" : "emoji"} className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 mb-6">
+                                <TabsTrigger value="emoji">Emoji</TabsTrigger>
+                                <TabsTrigger value="image">Photo</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="emoji" className="space-y-4">
+                                <div className="flex flex-col items-center gap-4 py-4">
+                                    <Avatar className="h-24 w-24 border-2 border-border shadow-soft">
+                                        <AvatarFallback className="bg-secondary/50 text-4xl">
+                                            {emoji || user?.email?.[0].toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <p className="text-sm text-muted-foreground text-center">
+                                        Select an emoji from below to use as your avatar
+                                    </p>
+                                </div>
+                                <EmojiPicker value={emoji} onChange={(newEmoji) => {
+                                    updateEmoji(newEmoji);
+                                    if (avatarUrl) {
+                                        removeAvatar();
+                                    }
+                                    toast.success("Avatar updated!");
+                                }} />
+                            </TabsContent>
+                            <TabsContent value="image" className="space-y-4">
+                                <div className="flex flex-col items-center gap-4 py-4">
+                                    <Avatar className="h-24 w-24 border-2 border-border shadow-soft">
+                                        <AvatarImage src={avatarUrl || ""} className="object-cover" />
+                                        <AvatarFallback className="bg-secondary/50 text-4xl">
+                                            {user?.email?.[0].toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="w-full max-w-sm">
+                                        <ImageUpload
+                                            onImageSelect={(file) => {
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = () => {
+                                                        setCropImage(reader.result as string);
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                } else {
+                                                    // Handle removal via ImageUpload component if it supports it
+                                                    // But ImageUpload usually just selects file. 
+                                                    // We might need a button to remove existing image if we are in this tab
+                                                    removeAvatar();
+                                                }
+                                            }}
+                                            existingImageUrl={avatarUrl}
+                                        />
+                                        {isUploading && (
+                                            <p className="text-sm text-center text-muted-foreground mt-2 animate-pulse">
+                                                Uploading...
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </CardContent>
                 </Card>
 
@@ -145,6 +205,16 @@ export default function Profile() {
                     </button>
                 </div>
 
+                <ImageCropper
+                    imageSrc={cropImage}
+                    open={!!cropImage}
+                    onCancel={() => setCropImage(null)}
+                    onCropComplete={(blob) => {
+                        const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+                        uploadAvatar(file);
+                        setCropImage(null);
+                    }}
+                />
             </main>
         </div>
     );

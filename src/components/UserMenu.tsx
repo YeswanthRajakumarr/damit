@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useEmojiAvatar } from "@/hooks/useEmojiAvatar";
+import { useProfileAvatar } from "@/hooks/useProfileAvatar";
 
 export const UserMenu = () => {
     const { user } = useAuthContext();
-    const { emoji } = useEmojiAvatar();
+    const { emoji, avatarUrl } = useProfileAvatar();
 
     if (!user) return null;
 
@@ -18,6 +18,7 @@ export const UserMenu = () => {
             aria-label="Profile"
         >
             <Avatar className="h-9 w-9 border border-border/50 shadow-soft hover:shadow-card transition-all cursor-pointer">
+                <AvatarImage src={avatarUrl || ""} className="object-cover" />
                 <AvatarFallback className={emoji ? "bg-secondary/50 text-2xl" : "bg-primary/10 text-primary font-bold text-lg"}>
                     {emoji || initial}
                 </AvatarFallback>
