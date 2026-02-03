@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
@@ -12,7 +12,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 export default function Profile() {
-    const { user } = useAuthContext();
+    const { user, signOut } = useAuthContext();
     const { emoji, updateEmoji } = useEmojiAvatar();
     const [copied, setCopied] = useState(false);
 
@@ -30,6 +30,15 @@ export default function Profile() {
             toast.error("Failed to copy link");
         }
     };
+    const handleLogout = async () => {
+        const { error } = await signOut();
+        if (error) {
+            toast.error("Failed to logout");
+        } else {
+            toast.success("Logged out successfully");
+        }
+    };
+
 
     return (
         <div className="min-h-screen gradient-warm">
@@ -124,6 +133,16 @@ export default function Profile() {
                     <div className="absolute -bottom-12 -right-12 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <Share2 className="w-48 h-48 text-primary" />
                     </div>
+                </div>
+
+                <div className="flex justify-center pt-4">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 px-4 py-2 text-destructive hover:bg-destructive/10 rounded-xl transition-colors font-medium"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        Log out
+                    </button>
                 </div>
 
             </main>
