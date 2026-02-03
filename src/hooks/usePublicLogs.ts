@@ -1,26 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { DailyLog } from "./useDailyLogs";
+import { DateRange } from "react-day-picker";
+import { formatDateLocal } from "@/lib/utils";
 
-export const usePublicLogs = (userId: string | undefined) => {
+export const usePublicLogs = (userId: string | undefined, dateRange?: DateRange) => {
     return useQuery({
-        queryKey: ["public-logs", userId],
+        queryKey: ["public-logs", userId, dateRange],
         queryFn: async () => {
             if (!userId) return null;
 
             // Use the supabase client which works with anon key for public access
             // The RLS policy "Anyone can view logs for public sharing" should allow this
-            const { data, error } = await supabase
+            let query = supabase
                 .from("daily_logs")
                 .select("*")
                 .eq("user_id", userId)
                 .order("log_date", { ascending: false });
 
+            // Add date range filters
+            if (dateRange?.from) {
+                query = query.gte("log_date", formatDateLocal(dateRange.from));
+            }
+            if (dateRange?.to) {
+                query = query.lte("log_date", formatDateLocal(dateRange.to));
+            }
+
+            const { data, error } = await query;
+
             if (error) {
                 console.error("Error fetching public logs:", error);
                 throw error;
             }
-            return data as DailyLog[];
+            return data as unknown as DailyLog[];
         },
         enabled: !!userId,
         retry: 1, // Only retry once for public queries
