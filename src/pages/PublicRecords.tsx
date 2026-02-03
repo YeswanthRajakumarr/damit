@@ -6,16 +6,17 @@ import { TrendChart } from "@/components/analytics/TrendChart";
 import { PublicLogsTable } from "@/components/logs/PublicLogsTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Share2, BarChart3, Table2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function PublicRecords() {
     const { userId } = useParams();
-    
+
     // Validate userId format (UUID)
     const isValidUUID = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
-    
+
     const { data: logs, isLoading: loadingLogs, error: logsError } = usePublicLogs(isValidUUID ? userId : undefined);
     const { data: profile, isLoading: loadingProfile, error: profileError } = usePublicProfile(isValidUUID ? userId : undefined);
-    
+
     // If userId is invalid format, show error immediately
     if (userId && !isValidUUID) {
         return (
@@ -90,8 +91,13 @@ export default function PublicRecords() {
         <div className="min-h-screen gradient-warm">
             {/* Header */}
             <header className="px-6 pt-12 pb-8 text-center max-w-5xl mx-auto">
-                <div className="w-20 h-20 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
-                    <Share2 className="w-10 h-10" />
+                <div className="flex justify-center mb-6">
+                    <Avatar className="h-24 w-24 border-4 border-background shadow-soft">
+                        <AvatarImage src={profile.avatar_url || ""} className="object-cover" />
+                        <AvatarFallback className="bg-primary/10 text-primary text-3xl font-bold">
+                            {profile.emoji || profile.display_name?.[0].toUpperCase()}
+                        </AvatarFallback>
+                    </Avatar>
                 </div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">
                     {profile.display_name}'s Dashboard

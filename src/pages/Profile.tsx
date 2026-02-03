@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut, Camera, Smile } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check, Globe, BarChart3, User, LogOut, Camera, Smile, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
@@ -120,12 +120,19 @@ export default function Profile() {
                         />
 
                         <div className="relative mb-6">
-                            <Avatar className="h-32 w-32 border-4 border-background shadow-soft ring-2 ring-border/20">
-                                <AvatarImage src={avatarUrl || ""} className="object-cover" />
-                                <AvatarFallback className="bg-secondary/50 text-5xl">
-                                    {emoji || user?.email?.[0].toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
+                            <div className="relative">
+                                <Avatar className="h-32 w-32 border-4 border-background shadow-soft ring-2 ring-border/20">
+                                    <AvatarImage src={avatarUrl || ""} className="object-cover" />
+                                    <AvatarFallback className="bg-secondary/50 text-5xl">
+                                        {emoji || user?.email?.[0].toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                {isUploading && (
+                                    <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
+                                        <Loader2 className="w-8 h-8 text-white animate-spin" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="flex items-center gap-3">
@@ -133,6 +140,7 @@ export default function Profile() {
                                 variant="outline"
                                 className="gap-2"
                                 onClick={() => fileInputRef.current?.click()}
+                                disabled={isUploading}
                             >
                                 <Camera className="w-4 h-4" />
                                 {avatarUrl ? "Change Photo" : "Upload Photo"}
@@ -140,7 +148,7 @@ export default function Profile() {
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" className="gap-2">
+                                    <Button variant="outline" className="gap-2" disabled={isUploading}>
                                         <Smile className="w-4 h-4" />
                                         Choose Emoji
                                     </Button>
@@ -166,11 +174,7 @@ export default function Profile() {
                             </Popover>
                         </div>
 
-                        {isUploading && (
-                            <p className="text-sm text-center text-muted-foreground mt-4 animate-pulse">
-                                Uploading new avatar...
-                            </p>
-                        )}
+                        {/* Header loader removed, using overlay */}
                     </CardContent>
                 </Card>
 

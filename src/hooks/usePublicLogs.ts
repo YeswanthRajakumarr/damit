@@ -37,7 +37,7 @@ export const usePublicProfile = (userId: string | undefined) => {
             // The RLS policy "Anyone can view profiles for public sharing" should allow this
             const { data, error } = await supabase
                 .from("profiles")
-                .select("display_name, avatar_url")
+                .select("display_name, avatar_url, emoji")
                 .eq("user_id", userId)
                 .maybeSingle();
 

@@ -45,14 +45,37 @@ export function useProfileAvatar() {
     }, [user]);
 
     const updateEmoji = useCallback(
-        (newEmoji: string) => {
+        async (newEmoji: string) => {
             if (!emojiStorageKey || typeof window === "undefined") {
                 return;
             }
+            // Optimistic update
             setEmoji(newEmoji);
             localStorage.setItem(emojiStorageKey, newEmoji);
+
+            if (user) {
+                setIsUploading(true);
+                try {
+                    // Also update the profile in Supabase so it's visible publicly
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({ emoji: newEmoji })
+                        .eq('user_id', user.id);
+
+                    if (error) {
+                        console.error("Error updating emoji to profile:", error);
+                        toast.error("Failed to sync emoji to public profile");
+                    } else {
+                        toast.success("Emoji updated!");
+                    }
+                } catch (e) {
+                    console.error("Exception updating emoji:", e);
+                } finally {
+                    setIsUploading(false);
+                }
+            }
         },
-        [emojiStorageKey]
+        [emojiStorageKey, user]
     );
 
     const uploadAvatar = useCallback(async (file: File) => {
@@ -77,6 +100,16 @@ export function useProfileAvatar() {
 
             if (updateError) throw updateError;
 
+            // Also update the profile in Supabase so it's visible publicly
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .update({ avatar_url: data.publicUrl })
+                .eq('user_id', user.id);
+
+            if (profileError) {
+                console.error("Error updating avatar to profile:", profileError);
+            }
+
             setAvatarUrl(data.publicUrl);
             toast.success("Profile photo updated!");
         } catch (error: any) {
@@ -98,6 +131,16 @@ export function useProfileAvatar() {
             });
 
             if (error) throw error;
+
+            // Also update the profile in Supabase so it's visible publicly
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .update({ avatar_url: null })
+                .eq('user_id', user.id);
+
+            if (profileError) {
+                console.error("Error removing avatar from profile:", profileError);
+            }
 
             setAvatarUrl(null);
             toast.success("Profile photo removed");
