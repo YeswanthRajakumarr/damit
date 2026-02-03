@@ -53,6 +53,18 @@ const ICON_MAP: Record<string, any> = {
     morning: Sun,
 };
 
+// Static color classes for Tailwind (dynamic classes won't compile)
+const COLOR_CLASSES: Record<string, { bg: string; text: string }> = {
+    "primary": { bg: "bg-primary/10", text: "text-primary" },
+    "success": { bg: "bg-success/10", text: "text-success" },
+    "amber-500": { bg: "bg-amber-500/10", text: "text-amber-500" },
+    "blue-500": { bg: "bg-blue-500/10", text: "text-blue-500" },
+    "purple-500": { bg: "bg-purple-500/10", text: "text-purple-500" },
+    "rose-500": { bg: "bg-rose-500/10", text: "text-rose-500" },
+    "cyan-500": { bg: "bg-cyan-500/10", text: "text-cyan-500" },
+    "indigo-500": { bg: "bg-indigo-500/10", text: "text-indigo-500" },
+};
+
 export default function Profile() {
     const { user, signOut } = useAuthContext();
     const { emoji, updateEmoji, avatarUrl, uploadAvatar, removeAvatar, isUploading } = useProfileAvatar();
@@ -61,7 +73,7 @@ export default function Profile() {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Goals state
-    const { data: goals, isLoading: loadingGoals } = useGoals();
+    const { data: goals, isLoading: loadingGoals, error: goalsError } = useGoals();
     const createGoal = useCreateGoal();
     const updateGoal = useUpdateGoal();
     const deleteGoal = useDeleteGoal();
@@ -315,6 +327,13 @@ export default function Profile() {
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {goalsError && (
+                                    <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+                                        <p className="text-sm text-destructive font-medium">Failed to load goals</p>
+                                        <p className="text-xs text-destructive/80 mt-1">Please refresh the page or try again later.</p>
+                                    </div>
+                                )}
+
                                 {loadingGoals ? (
                                     <div className="space-y-3">
                                         {[1, 2, 3].map((i) => (
@@ -325,11 +344,12 @@ export default function Profile() {
                                     <div className="space-y-3">
                                         {goals.map((goal) => {
                                             const IconComponent = ICON_MAP[goal.icon_type] || Target;
+                                            const colorClass = COLOR_CLASSES[goal.color] || COLOR_CLASSES.primary;
                                             return (
                                                 <div key={goal.id} className="flex items-center justify-between p-4 rounded-xl bg-secondary/20 border border-border/30 group hover:bg-secondary/30 transition-colors">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`p-2 rounded-lg bg-${goal.color}/10`}>
-                                                            <IconComponent className={`w-5 h-5 text-${goal.color}`} />
+                                                        <div className={`p-2 rounded-lg ${colorClass.bg}`}>
+                                                            <IconComponent className={`w-5 h-5 ${colorClass.text}`} />
                                                         </div>
                                                         <div>
                                                             <p className="font-semibold text-foreground">{goal.title}</p>

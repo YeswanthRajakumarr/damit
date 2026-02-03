@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,10 +54,25 @@ const COLOR_OPTIONS = [
 ];
 
 export function GoalDialog({ open, onClose, onSave, goal, isSaving }: GoalDialogProps) {
-    const [title, setTitle] = useState(goal?.title || "");
-    const [target, setTarget] = useState(goal?.target || "");
-    const [selectedIcon, setSelectedIcon] = useState(goal?.icon_type || "target");
-    const [selectedColor, setSelectedColor] = useState(goal?.color || "primary");
+    const [title, setTitle] = useState("");
+    const [target, setTarget] = useState("");
+    const [selectedIcon, setSelectedIcon] = useState("target");
+    const [selectedColor, setSelectedColor] = useState("primary");
+
+    // Sync state with goal prop when it changes
+    useEffect(() => {
+        if (goal) {
+            setTitle(goal.title);
+            setTarget(goal.target);
+            setSelectedIcon(goal.icon_type);
+            setSelectedColor(goal.color);
+        } else {
+            setTitle("");
+            setTarget("");
+            setSelectedIcon("target");
+            setSelectedColor("primary");
+        }
+    }, [goal, open]);
 
     const handleSave = () => {
         if (!title.trim() || !target.trim()) return;
@@ -124,6 +139,8 @@ export function GoalDialog({ open, onClose, onSave, goal, isSaving }: GoalDialog
                                         type="button"
                                         onClick={() => setSelectedIcon(option.value)}
                                         disabled={isSaving}
+                                        aria-label={`Select ${option.label} icon`}
+                                        aria-pressed={selectedIcon === option.value}
                                         className={`p-3 rounded-lg border-2 transition-all ${selectedIcon === option.value
                                             ? "border-primary bg-primary/10"
                                             : "border-border hover:border-primary/50"
@@ -145,6 +162,8 @@ export function GoalDialog({ open, onClose, onSave, goal, isSaving }: GoalDialog
                                     type="button"
                                     onClick={() => setSelectedColor(option.value)}
                                     disabled={isSaving}
+                                    aria-label={`Select ${option.label} color`}
+                                    aria-pressed={selectedColor === option.value}
                                     className={`w-10 h-10 rounded-lg ${option.class} transition-all ${selectedColor === option.value
                                         ? "ring-2 ring-offset-2 ring-foreground"
                                         : "hover:ring-2 hover:ring-offset-2 hover:ring-foreground/50"
