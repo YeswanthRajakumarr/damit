@@ -81,6 +81,13 @@ const METRICS = [
     { label: "Mindset", key: "proud_of_yourself", type: "boolean", icon: Heart, color: "text-rose-500" },
 ];
 
+const formatStepCount = (steps: number) => {
+    if (steps >= 1000) {
+        return `${(steps / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    }
+    return steps.toString();
+};
+
 export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageChange, onPageSizeChange, isLoading, error, onLogClick }: LogsDataGridProps) {
     const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
     const [jumpPage, setJumpPage] = useState("");
@@ -199,7 +206,14 @@ export function LogsDataGrid({ logs, totalCount, currentPage, pageSize, onPageCh
                                                             ? "text-destructive"
                                                             : "text-foreground"
                                                     )}>
-                                                        {value?.toLocaleString() || "-"}
+                                                        {metric.key === 'step_count' && value !== null ? (
+                                                            <>
+                                                                <span className="sm:hidden">{formatStepCount(Number(value))}</span>
+                                                                <span className="hidden sm:inline">{value.toLocaleString()}</span>
+                                                            </>
+                                                        ) : (
+                                                            value?.toLocaleString() || "-"
+                                                        )}
                                                     </span>
                                                 ) : metric.type === "boolean" ? (
                                                     <div className="flex justify-center">
