@@ -15,6 +15,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function PublicRecords() {
     const { userId } = useParams();
@@ -103,7 +104,11 @@ export default function PublicRecords() {
     return (
         <div className="min-h-screen gradient-warm">
             {/* Header */}
-            <header className="px-6 pt-12 pb-8 text-center max-w-5xl mx-auto">
+            <header className="px-6 pt-12 pb-8 text-center max-w-5xl mx-auto relative">
+                {/* Theme Toggle - Top Right */}
+                <div className="absolute top-4 right-6">
+                    <ThemeToggle />
+                </div>
                 <div className="flex justify-center mb-6">
                     <Avatar className="h-24 w-24 border-4 border-background shadow-soft">
                         <AvatarImage src={profile.avatar_url || ""} className="object-cover" />
